@@ -5,6 +5,16 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
 
+import {
+  CAPICCI_VIEWBOX,
+  CAPICCI_GEOMETRY,
+  CAPICCI_LINES,
+  CAPICCI_RINGS,
+  CAPICCI_ICON,
+  CAPICCI_WORD,
+  CAPICCI_TAGLINE,
+} from "./capicci-logo-data";
+
 import "./Preloader.css";
 
 gsap.registerPlugin(useGSAP);
@@ -15,18 +25,13 @@ const BLOCK_SIZE_DESKTOP = 120;
 const BLOCK_SIZE_MOBILE = 80;
 const MOBILE_BREAKPOINT = 1000;
 
-const PATH =
-  "M0.00,223.62 C13.97,230.86 57.27,254.22 83.80,267.09 C110.33,279.96 126.47,302.27 159.17,300.85 C191.88,299.43 247.15,262.25 280.04,258.58 C312.92,254.91 329.78,276.72 356.48,278.83 C383.18,280.95 415.17,276.23 440.25,271.27 C465.32,266.31 479.47,257.02 506.93,249.06 C534.39,241.10 578.81,233.75 604.99,223.48 C631.16,213.22 634.84,199.17 663.99,187.49 C693.14,175.81 750.43,161.40 779.90,153.40 C809.37,145.40 811.78,139.68 840.80,139.48 C869.82,139.27 928.46,154.71 953.99,152.19 C979.53,149.66 963.87,124.04 994.01,124.35 C1024.15,124.66 1099.27,154.32 1134.83,154.04 C1170.39,153.77 1179.34,123.19 1207.34,122.70 C1235.33,122.21 1275.00,148.47 1302.79,151.09 C1330.59,153.70 1351.23,144.47 1374.10,138.39 C1396.97,132.31 1429.02,118.57 1440.00,114.61";
-
-const DELAY = 0.5;
-const BASE_IN = 1;
-const GAP_AFTER_BASE = 0.25;
-const FILL_IN = 3;
-const GAP_AFTER_FILL = 0.25;
-const BOTH_OUT = 1.5;
-const GAP_BEFORE_BLOCKS = 0;
+const DELAY = 0.25;
 const BLOCKS_OUT = 0.5;
 const BLOCK_STAGGER = 0.05;
+const GAP_BEFORE_BLOCKS = 0.2;
+
+const { iconBottom: ICON_BOTTOM, offscreenY: OFFSCREEN_Y, leaderMergeY: LEADER_MERGE_Y } =
+  CAPICCI_GEOMETRY;
 
 export default function Preloader() {
   const wrapperRef = useRef(null);
@@ -55,14 +60,25 @@ export default function Preloader() {
       const root = wrapperRef.current;
       const blocksEl = root.querySelector(".preloader-blocks");
       const svgEl = root.querySelector(".preloader-svg");
-      const base = root.querySelector(".preloader-path-base");
-      const fill = root.querySelector(".preloader-path-fill");
-      if (!root || !blocksEl || !svgEl || !base || !fill) return;
+      const leaders = gsap.utils.toArray(root.querySelectorAll(".capicci-leader"));
+      const wordPieces = gsap.utils.toArray(root.querySelectorAll(".capicci-word .capicci-piece"));
+      const taglinePieces = gsap.utils.toArray(
+        root.querySelectorAll(".capicci-tagline .capicci-piece"),
+      );
+      const rectEls = CAPICCI_LINES.map((_, i) =>
+        root.querySelector(`#capicci-clip-line${i + 1}-rect`),
+      );
+      const lineCircleEls = CAPICCI_LINES.map((_, i) =>
+        root.querySelector(`#capicci-clip-line${i + 1}-circle`),
+      );
+      const ringCircleEls = CAPICCI_RINGS.map((_, i) =>
+        root.querySelector(`#capicci-clip-ring${i + 1}-circle`),
+      );
+      if (!root || !blocksEl || !svgEl) return;
 
+      // ---- grid outro setup (unchanged from the original preloader) ----
       const blockSize =
-        window.innerWidth < MOBILE_BREAKPOINT
-          ? BLOCK_SIZE_MOBILE
-          : BLOCK_SIZE_DESKTOP;
+        window.innerWidth < MOBILE_BREAKPOINT ? BLOCK_SIZE_MOBILE : BLOCK_SIZE_DESKTOP;
 
       const cols = Math.ceil(window.innerWidth / blockSize);
       const rows = Math.ceil(window.innerHeight / blockSize);
@@ -80,19 +96,76 @@ export default function Preloader() {
           cells.push(cell);
         }
       }
-
       gsap.set(cells, { scale: 1.05, transformOrigin: "50% 50%" });
 
-      const L = base.getTotalLength();
-      const dashStr = `${L} ${L}`;
+      // ---- logo intro state ----
+      const state = {
+        leaderTop: OFFSCREEN_Y,
+        leaderBottom: OFFSCREEN_Y,
+        bandTop0: ICON_BOTTOM,
+        bandTop1: ICON_BOTTOM,
+        bandTop2: ICON_BOTTOM,
+        r0: 0,
+        r1: 0,
+        r2: 0,
+        ringR0: 0,
+        ringR1: 0,
+        ringR2: 0,
+      };
 
-      gsap.set(base, { strokeDasharray: dashStr, strokeDashoffset: L });
-      gsap.set(fill, {
-        strokeDasharray: dashStr,
-        strokeDashoffset: L,
-        opacity: 0,
-      });
+      function renderLeaders() {
+        leaders.forEach((el) => {
+          el.setAttribute("y", state.leaderTop);
+          el.setAttribute("height", Math.max(0, state.leaderBottom - state.leaderTop));
+        });
+      }
+
+      function renderRects() {
+        const tops = [state.bandTop0, state.bandTop1, state.bandTop2];
+        rectEls.forEach((el, i) => {
+          el.setAttribute("y", tops[i]);
+          el.setAttribute("height", Math.max(0, ICON_BOTTOM + 2 - tops[i]));
+        });
+      }
+
+      function renderLineCircles() {
+        const radii = [state.r0, state.r1, state.r2];
+        lineCircleEls.forEach((el, i) => el.setAttribute("r", radii[i]));
+      }
+
+      function renderRingCircles() {
+        const radii = [state.ringR0, state.ringR1, state.ringR2];
+        ringCircleEls.forEach((el, i) => el.setAttribute("r", radii[i]));
+      }
+
+      const GRID = 10;
+      function primeSnake(pieces) {
+        pieces.forEach((el, i) => {
+          const dir = i % 2 === 0 ? -1 : 1;
+          gsap.set(el, { x: dir * GRID, y: OFFSCREEN_Y, opacity: 1 });
+        });
+      }
+
       gsap.set(svgEl, { visibility: "visible" });
+      gsap.set(leaders, { opacity: 1 });
+      primeSnake(wordPieces);
+      primeSnake(taglinePieces);
+      renderLeaders();
+      renderRects();
+      renderLineCircles();
+      renderRingCircles();
+
+      function snakeIn(tl, pieces, startTime, stagger, riseDur, turnDur) {
+        pieces.forEach((el, i) => {
+          const t0 = startTime + i * stagger;
+          tl.to(el, { y: 0, duration: riseDur, ease: "none" }, t0).to(
+            el,
+            { x: 0, duration: turnDur, ease: "none" },
+            t0 + riseDur,
+          );
+        });
+        return startTime + (pieces.length - 1) * stagger + riseDur + turnDur;
+      }
 
       const tl = gsap.timeline({
         delay: DELAY,
@@ -102,42 +175,108 @@ export default function Preloader() {
         },
       });
 
-      tl.to(base, {
-        strokeDashoffset: 0,
-        duration: BASE_IN,
-        ease: "power1.inOut",
-        onComplete: () => {
-          gsap.set(fill, { opacity: 1 });
+      // Phase 0: the 3 centre lines travel up from off-canvas, tucking into
+      // the icon's solid straight zone (LEADER_MERGE_Y, not just
+      // ICON_BOTTOM -- the real path tapers slightly right at its bottom
+      // tip, so stopping exactly at ICON_BOTTOM leaves a hairline gap there)
+      tl.to(
+        state,
+        {
+          leaderTop: LEADER_MERGE_Y,
+          leaderBottom: OFFSCREEN_Y,
+          duration: 0.55,
+          ease: "none",
+          onUpdate: renderLeaders,
         },
-      })
+        0,
+      );
+
+      // Phase 1: each of the 3 lines rises as far as its OWN geometry
+      // safely allows -- lines 1 and 2 travel almost to the peak, line 3
+      // stops a bit sooner since its real straight run is shorter
+      tl.to(
+        state,
+        {
+          bandTop0: CAPICCI_LINES[0].safeTop,
+          bandTop1: CAPICCI_LINES[1].safeTop,
+          bandTop2: CAPICCI_LINES[2].safeTop,
+          duration: 0.45,
+          ease: "none",
+          onUpdate: renderRects,
+        },
+        0.55,
+      );
+
+      // Phase 2: each line's curve grows from its own tip point (where its
+      // straight run ends) -- gap-free by construction, all three starting
+      // at the same moment
+      tl.to(
+        state,
+        {
+          r0: CAPICCI_LINES[0].maxR,
+          r1: CAPICCI_LINES[1].maxR,
+          r2: CAPICCI_LINES[2].maxR,
+          duration: 0.9,
+          ease: "power2.out",
+          onUpdate: renderLineCircles,
+        },
+        1.0,
+      );
+
+      // Gold rings: same growing-circle draw, anchored at each ring's own
+      // bottom point (rings have no straight segment to lead in with).
+      // Staggered outer-to-inner, starting once the dark curves are mostly
+      // drawn in.
+      tl.to(
+        state,
+        {
+          ringR0: CAPICCI_RINGS[0].maxR,
+          duration: 0.55,
+          ease: "power2.out",
+          onUpdate: renderRingCircles,
+        },
+        1.5,
+      )
         .to(
-          fill,
+          state,
           {
-            strokeDashoffset: 0,
-            opacity: 1,
-            duration: FILL_IN,
-            ease: "power2.inOut",
+            ringR1: CAPICCI_RINGS[1].maxR,
+            duration: 0.5,
+            ease: "power2.out",
+            onUpdate: renderRingCircles,
           },
-          `+=${GAP_AFTER_BASE}`,
+          1.58,
         )
         .to(
-          base,
+          state,
           {
-            strokeDashoffset: -L,
-            duration: BOTH_OUT,
-            ease: "power2.inOut",
+            ringR2: CAPICCI_RINGS[2].maxR,
+            duration: 0.4,
+            ease: "power2.out",
+            onUpdate: renderRingCircles,
           },
-          `+=${GAP_AFTER_FILL}`,
-        )
-        .to(
-          fill,
-          {
-            strokeDashoffset: -L,
-            duration: BOTH_OUT,
-            ease: "power2.inOut",
-          },
-          "<",
-        )
+          1.66,
+        );
+
+      // Icon fully formed: retract the leader lines up into it
+      tl.to(
+        state,
+        {
+          leaderBottom: LEADER_MERGE_Y,
+          duration: 0.4,
+          ease: "power2.in",
+          onUpdate: renderLeaders,
+        },
+        2.0,
+      );
+
+      // Wordmark + tagline: Snake-style grid movement -- each stroke rises
+      // then makes one sharp turn sideways into its final slot
+      const wordEnd = snakeIn(tl, wordPieces, 2.2, 0.02, 0.32, 0.14);
+      snakeIn(tl, taglinePieces, wordEnd - 0.2, 0.012, 0.22, 0.1);
+
+      // Hold briefly, then hide the logo and play the existing blocks outro
+      tl.to({}, { duration: 0.3 })
         .set(svgEl, { visibility: "hidden" })
         .fromTo(
           cells,
@@ -166,12 +305,91 @@ export default function Preloader() {
       <div className="preloader-inner">
         <svg
           className="preloader-svg"
-          viewBox="0 0 1440 500"
-          preserveAspectRatio="xMidYMid slice"
+          viewBox={CAPICCI_VIEWBOX}
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path className="preloader-path-base" d={PATH} fill="none" />
-          <path className="preloader-path-fill" d={PATH} fill="none" />
+          <defs>
+            {CAPICCI_LINES.map((line, i) => (
+              <clipPath key={i} id={`capicci-clip-line${i + 1}`} clipPathUnits="userSpaceOnUse">
+                <rect
+                  id={`capicci-clip-line${i + 1}-rect`}
+                  x={line.rectX}
+                  width={line.rectW}
+                  y={ICON_BOTTOM}
+                  height={0}
+                />
+                <circle
+                  id={`capicci-clip-line${i + 1}-circle`}
+                  cx={line.tipX}
+                  cy={line.tipY}
+                  r={0}
+                />
+              </clipPath>
+            ))}
+            {CAPICCI_RINGS.map((ring, i) => (
+              <clipPath key={i} id={`capicci-clip-ring${i + 1}`} clipPathUnits="userSpaceOnUse">
+                <circle
+                  id={`capicci-clip-ring${i + 1}-circle`}
+                  cx={ring.tipX}
+                  cy={ring.tipY}
+                  r={0}
+                />
+              </clipPath>
+            ))}
+          </defs>
+
+          <g className="capicci-leaders">
+            {CAPICCI_LINES.map((line, i) => (
+              <rect
+                key={i}
+                className="capicci-leader"
+                fill="#2f2d2e"
+                x={line.rectX}
+                width={line.rectW}
+                y={ICON_BOTTOM}
+                height={0}
+              />
+            ))}
+          </g>
+
+          <g className="capicci-icon">
+            <g clipPath="url(#capicci-clip-line1)">
+              <path d={CAPICCI_ICON.outerCircle.d} fill={CAPICCI_ICON.outerCircle.fill} />
+            </g>
+            <path
+              clipPath="url(#capicci-clip-line2)"
+              d={CAPICCI_ICON.pmarkOuter.d}
+              fill={CAPICCI_ICON.pmarkOuter.fill}
+            />
+            <path
+              clipPath="url(#capicci-clip-line3)"
+              d={CAPICCI_ICON.pmarkInner.d}
+              fill={CAPICCI_ICON.pmarkInner.fill}
+            />
+            {CAPICCI_ICON.rings.map((ring, i) => (
+              <g key={i} clipPath={`url(#capicci-clip-ring${i + 1})`}>
+                <path d={ring.d} fill={ring.fill} />
+              </g>
+            ))}
+          </g>
+
+          <g className="capicci-word">
+            {CAPICCI_WORD.map((letter, li) => (
+              <g className="capicci-letter" key={li}>
+                {letter.map((p, pi) => (
+                  <path key={pi} className="capicci-piece" d={p.d} fill={p.fill} />
+                ))}
+              </g>
+            ))}
+          </g>
+
+          <g className="capicci-tagline">
+            {CAPICCI_TAGLINE.map((p, i) => (
+              <g className="capicci-piece" key={i}>
+                <path d={p.d} fill={p.fill} />
+              </g>
+            ))}
+          </g>
         </svg>
       </div>
     </div>

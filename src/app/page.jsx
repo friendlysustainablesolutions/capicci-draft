@@ -4,7 +4,6 @@ import Preloader, { isInitialLoad } from "@/components/Preloader/Preloader";
 import Showreel from "@/components/Showreel/Showreel";
 import About from "@/components/About/About";
 import FeaturedCards from "@/components/FeaturedCards/FeaturedCards";
-import CTA from "@/components/CTA/CTA";
 import Copy from "@/components/Copy/Copy";
 
 import "./home.css";
@@ -25,8 +24,8 @@ export default function Home() {
         <div className="container">
           <div className="hero-header">
             <Copy animateOnScroll={false} delay={heroDelay}>
-              <h1>CAPICCI</h1>
-              <h1 className="subheader">EVENTS & HAPPINESS</h1>
+              <h2>CAPICCI</h2>
+              <h2 className="subheader">EVENTS & HAPPINESS</h2>
             </Copy>
           </div>
 
@@ -41,11 +40,9 @@ export default function Home() {
         </div>
       </section>
 
-      <About />
+      <About showIntro={false} />
 
       <Showreel />
-
-      <CTA />
 
       <FeaturedCards />
     </>

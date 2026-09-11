@@ -1,0 +1,338 @@
+.weddings-showcase {
+  padding: 0 0 4rem;
+  overflow: hidden;
+}
+
+.weddings-hero-image {
+  position: relative;
+  height: min(72vw, 780px);
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.weddings-hero-image img,
+.weddings-image-card img,
+.weddings-story-image img,
+.weddings-mosaic-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.weddings-image-caption {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  color: var(--base-100);
+}
+
+.weddings-image-caption .v2 {
+  font-size: clamp(2rem, 5vw, 5rem);
+}
+
+.weddings-intro {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 4rem;
+  align-items: end;
+  max-width: 1100px;
+  margin: 8rem auto;
+}
+
+.weddings-intro h3,
+.weddings-story-copy h4 {
+  font-size: clamp(3rem, 7vw, 7rem);
+}
+
+.weddings-intro p,
+.weddings-story-copy > p {
+  line-height: 1.5;
+}
+
+.weddings-image-row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr 1.1fr;
+  gap: 1rem;
+  align-items: end;
+}
+
+.weddings-image-card {
+  height: min(42vw, 520px);
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.weddings-image-card-2 {
+  height: min(30vw, 380px);
+}
+
+.weddings-story-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 10rem auto;
+}
+
+.weddings-story-copy {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.weddings-story-copy h4 {
+  margin-top: 1rem;
+}
+
+.weddings-story-image {
+  height: min(55vw, 650px);
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.weddings-mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(260px, 28vw);
+  gap: 1rem;
+}
+
+.weddings-mosaic-item {
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.weddings-mosaic-item:nth-child(2),
+.weddings-mosaic-item:nth-child(5) {
+  grid-row: span 2;
+}
+
+@media (max-width: 700px) {
+  .weddings-hero-image {
+    height: 125vw;
+  }
+
+  .weddings-image-caption {
+    display: block;
+  }
+
+  .weddings-image-caption .v2 {
+    margin-top: 0.75rem;
+  }
+
+  .weddings-intro,
+  .weddings-story-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 6rem 0;
+  }
+
+  .weddings-image-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .weddings-image-card,
+  .weddings-image-card-2 {
+    height: 62vw;
+  }
+
+  .weddings-image-card-3 {
+    grid-column: span 2;
+    height: 80vw;
+  }
+
+  .weddings-mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 58vw;
+  }
+
+  .weddings-mosaic-item:nth-child(2),
+  .weddings-mosaic-item:nth-child(5) {
+    grid-row: span 1;
+  }
+}
+
+.weddings-flip-section {
+  margin: 0 0 6rem;
+  padding: 0;
+  background: var(--base-100);
+}
+
+.weddings-flip-section .container {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  background: var(--base-100);
+}
+
+.weddings-flip-section.transmit-sticky {
+  padding: 0;
+}
+
+div.pin-spacer:has(> .weddings-flip-section) {
+  background: var(--base-100);
+}
+
+@media (min-width: 1001px) {
+  .weddings-flip-section .transmit-card-container {
+    width: 100%;
+    transform: none;
+  }
+
+  .weddings-flip-section .transmit-card {
+    height: 100svh;
+    aspect-ratio: auto;
+  }
+}
+
+.weddings-flip-section .transmit-sticky-header {
+  top: 14%;
+  max-width: 720px;
+  white-space: normal;
+  color: var(--base-100);
+}
+
+.weddings-flip-section .transmit-card-back {
+  padding: 2.25rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.22);
+}
+
+.weddings-flip-section .transmit-card-info {
+  align-items: center;
+  gap: 4rem;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.weddings-flip-section .transmit-card-block {
+  align-items: center;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+@media (max-width: 1000px) {
+  .weddings-flip-section .transmit-sticky {
+    height: 100svh;
+    padding: 0;
+  }
+
+  .weddings-flip-section .transmit-sticky .container {
+    position: relative;
+    gap: 0;
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .weddings-flip-section .transmit-sticky-header {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    z-index: 5;
+    transform: translateX(-50%);
+    width: min(90vw, 420px);
+    color: var(--base-100);
+  }
+
+  .weddings-flip-section .transmit-card-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    transform: none;
+    perspective: 1000px;
+  }
+
+  .weddings-flip-section .transmit-card {
+    position: relative;
+    flex: 1 1 33.333%;
+    width: 100%;
+    height: 33.333%;
+    min-height: 0;
+    aspect-ratio: auto;
+    border-radius: 0;
+    transform-style: preserve-3d;
+  }
+
+  .weddings-flip-section .transmit-card-front,
+  .weddings-flip-section .transmit-card-back {
+    display: flex !important;
+    border-radius: 0;
+  }
+
+  .weddings-flip-section .transmit-card-front {
+    z-index: 2;
+    backface-visibility: visible;
+  }
+
+  .weddings-flip-section .transmit-card-back {
+    display: none !important;
+  }
+
+  .weddings-flip-section .transmit-card-front {
+    transform: none !important;
+  }
+
+  .weddings-flip-section .transmit-card-split img {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 300%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  .weddings-flip-section .transmit-card-split-left img {
+    top: 0;
+  }
+
+  .weddings-flip-section .transmit-card-split-middle img {
+    top: -100%;
+  }
+
+  .weddings-flip-section .transmit-card-split-right img {
+    top: -200%;
+  }
+
+  .weddings-flip-section .transmit-sticky-header {
+    white-space: normal;
+  }
+
+  .weddings-flip-section .transmit-card-back {
+    padding: 2rem 1.5rem;
+  }
+
+  .weddings-flip-section .transmit-card-info {
+    gap: 2.5rem;
+    max-width: 420px;
+  }
+}
+
+.weddings-opening-copy {
+  padding: 7rem 0 4rem;
+}
+
+.weddings-opening-copy .container {
+  max-width: 1200px;
+}
+
+.weddings-opening-copy p {
+  max-width: 980px;
+  margin: 0 auto;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.weddings-final-cta {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0 8rem;
+}

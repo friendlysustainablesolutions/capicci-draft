@@ -11,7 +11,7 @@ export default function DecorationPage() {
           <div className="page-header-content">
             <Copy animateOnScroll={false} delay={0.3}>
               <h1 className="subheader">CAPICCI</h1>
-              <h1>Decoration & Rental</h1>
+              <h1>Decoração e Aluguer</h1>
             </Copy>
           </div>
         </div>
@@ -22,39 +22,39 @@ export default function DecorationPage() {
           <div className="content-wrapper">
             <Copy splitType="words">
               <p className="lg">
-                Our decoration comes from materials that have been acquired over several years and allow us to obtain a unique and original aesthetic, offering the possibility to personalize each space to reflect your essence.
+                Alugamos o nosso material de forma integrada ou independente, desde loiças a mobiliário e equipamento, possibilitando ao cliente encontrar a melhor solução para o seu evento, de acordo com as suas necessidades e preferências.
               </p>
             </Copy>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Equipment Rental</h6>
+                <h6 className="v2">Estética Única</h6>
               </Copy>
               <p className="md">
-                We offer a wide range of materials for rent, from furniture to tableware, cutlery, glasses and decorative elements. Our catalog includes exclusive pieces that have been carefully selected over the years, ensuring quality and originality.
+                Apostamos numa decoração original, adquirida continuamente ao longo de vários anos, o que permite transformar o seu evento numa atmosfera única, com soluções personalizadas e que refletem a sua visão.
               </p>
             </div>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Decoration Design</h6>
+                <h6 className="v2">Sustentabilidade</h6>
               </Copy>
               <p className="md">
-                Our design team creates personalized decorations for each event, taking into account the theme, location and preferences of our clients. From weddings to corporate events, we transform spaces into unique and memorable environments.
+                A reutilização criativa destes materiais, aplicando-os a novos conceitos e ambientes, não só permite prolongar a vida útil das peças, como confere uma componente de sustentabilidade ao reduzir o impacto ambiental do cliente.
               </p>
             </div>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Complete Service</h6>
+                <h6 className="v2">Categorias de Material Disponível</h6>
               </Copy>
               <p className="md">
-                We offer a complete service that includes transportation, assembly and disassembly of all materials. Our team ensures that everything is ready on time and in perfect condition, so you can enjoy the event without worries.
+                Loiças | Toalhas | Mesas e Cadeiras | Peças de Decoração/Luzes | Talheres
               </p>
             </div>
 
             <div className="cta-section">
-              <Button href="/contacts" label="View Catalog" />
+              <Button href="/contacts" label="Pedir informações" />
             </div>
           </div>
         </div>

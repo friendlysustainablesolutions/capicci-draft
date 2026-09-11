@@ -11,7 +11,7 @@ export default function AboutPage() {
           <div className="page-header-content">
             <Copy animateOnScroll={false} delay={0.3}>
               <h1 className="subheader">CAPICCI</h1>
-              <h1>About Us</h1>
+              <h1>Sobre</h1>
             </Copy>
           </div>
         </div>

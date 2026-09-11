@@ -109,7 +109,7 @@ export default function CTA() {
 
         const ctaPointer = document.createElementNS(CTA_SVG_NS, "polygon");
         ctaPointer.setAttributeNS(null, "points", "300,5 309,21 291,21");
-        ctaPointer.setAttributeNS(null, "fill", "#ffae00");
+        ctaPointer.setAttributeNS(null, "fill", "#fdb913");
         svg.appendChild(ctaPointer);
         ctaPointerRef.current = ctaPointer;
 

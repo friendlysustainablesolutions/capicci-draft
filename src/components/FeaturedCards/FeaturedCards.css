@@ -4,6 +4,7 @@
   height: 100svh;
   padding: 0.75rem;
   overflow: hidden;
+  isolation: isolate;
   background-color: var(--base-200);
 }
 
@@ -105,20 +106,31 @@
   padding: 1.5rem;
   text-align: center;
   color: var(--base-300);
+  gap: 0.65rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
 }
 
 .featured-card-content h6.subheader {
+  position: relative;
+  top: -1.15rem;
+  width: 100%;
+  transform: none;
   font-size: clamp(1rem, 2vw, 3rem);
-  margin-bottom: 0.1875rem;
+  margin: 0 0 0.35rem;
+  line-height: 1;
 }
 
 .featured-card-content h5 {
+  width: 100%;
+  margin: 0;
   font-size: clamp(1.5rem, 5vw, 4rem);
+  line-height: 0.9;
 }
 
 @media (max-width: 1000px) {
   .featured-cards {
     height: auto;
+    margin-bottom: 5rem;
     padding: 0;
     overflow: visible;
   }

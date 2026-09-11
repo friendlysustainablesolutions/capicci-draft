@@ -123,7 +123,11 @@ function ChroniclesTitleLink({ href, title }) {
   );
 }
 
-export default function ChroniclesPage() {
+export default function ChroniclesPage({
+  items = chronicles,
+  titleHref = "/report",
+  counterPrefix = "CHR",
+}) {
   const chroniclesPageRef = useRef(null);
   const chroniclesSlidesRef = useRef(null);
   const chroniclesCurrentRef = useRef(0);
@@ -412,7 +416,7 @@ export default function ChroniclesPage() {
       });
     }
 
-    preloadImages(chronicles.map((c) => c.image)).then(chroniclesInit);
+    preloadImages(items.map((c) => c.image)).then(chroniclesInit);
 
     return () => {
       if (chroniclesTimelineRef.current) chroniclesTimelineRef.current.kill();
@@ -422,14 +426,14 @@ export default function ChroniclesPage() {
       );
       chroniclesRevertActiveFlicker();
     };
-  }, []);
+  }, [items]);
 
-  const chroniclesTotal = String(chronicles.length).padStart(2, "0");
+  const chroniclesTotal = String(items.length).padStart(2, "0");
 
   return (
     <div className="chronicles-page" ref={chroniclesPageRef}>
       <div className="chronicles-slides" ref={chroniclesSlidesRef}>
-        {chronicles.map((item, i) => (
+        {items.map((item, i) => (
           <div className="chronicles-slide" key={i}>
             <div
               className="chronicles-slide-img"
@@ -439,7 +443,7 @@ export default function ChroniclesPage() {
               <p className="mono chronicles-slide-year">{item.year}</p>
               <div className="chronicles-slide-title-block">
                 <h1 className="subheader">{item.subtitle}</h1>
-                <ChroniclesTitleLink href="/report" title={item.title} />
+                <ChroniclesTitleLink href={titleHref} title={item.title} />
               </div>
               <div className="chronicles-slide-footer">
                 <p className="mono sm">{item.location}</p>
@@ -451,7 +455,7 @@ export default function ChroniclesPage() {
                   ))}
                 </div>
                 <p className="mono sm chronicles-slide-counter">
-                  CHR {String(i + 1).padStart(2, "0")} / {chroniclesTotal}
+                  {counterPrefix} {String(i + 1).padStart(2, "0")} / {chroniclesTotal}
                 </p>
               </div>
             </div>

@@ -198,6 +198,10 @@ div.pin-spacer:has(> .report-section) {
   color: var(--base-300);
 }
 
+.about-services-report .report-data-block p {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
 .report-data-block p.mono {
   font-weight: 400;
 }
@@ -308,5 +312,30 @@ div.pin-spacer:has(> .report-section) {
 
   .report-data-block {
     display: none;
+  }
+
+  .about-services-report .report-data-block {
+    display: flex;
+    left: 50%;
+    right: auto;
+    width: min(82vw, 360px);
+    align-items: center;
+    text-align: center;
+    text-shadow:
+      0 2px 2px rgba(0, 0, 0, 0.95),
+      0 0 8px rgba(0, 0, 0, 0.95),
+      0 0 18px rgba(0, 0, 0, 0.75);
+  }
+
+  .about-services-report .report-data-top-left,
+  .about-services-report .report-data-top-right {
+    top: 20%;
+    bottom: auto;
+  }
+
+  .about-services-report .report-data-bottom-left,
+  .about-services-report .report-data-bottom-right {
+    top: auto;
+    bottom: 20%;
   }
 }

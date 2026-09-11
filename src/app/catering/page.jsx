@@ -22,30 +22,30 @@ export default function CateringPage() {
           <div className="content-wrapper">
             <Copy splitType="words">
               <p className="lg">
-                O nosso catering é versátil e alinhado com as mais recentes tendências gastronómicas. As nossas ementas combinam confiança com qualidade e podem ser adaptadas aos seus gostos e necessidades, sejam estas tradicionais ou alternativas, vegetarianas, veganas e/ou sem glúten.
+                A gastronomia é, sem dúvida, uma das experiências mais marcantes de qualquer evento, sendo frequentemente um dos elementos mais apreciados pelos convidados por criar a verdadeira diferença.
               </p>
             </Copy>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">O Nosso Serviço</h6>
+                <h6 className="v2">Qualidade e Variedade</h6>
               </Copy>
               <p className="md">
-                Com mais de 25 anos de experiência no setor de eventos, a nossa equipa garante um serviço de catering de excelência, desde eventos corporativos a celebrações privadas. Trabalhamos com ingredientes frescos e de qualidade, sempre com o objetivo de superar as expectativas dos nossos clientes.
+                No nosso Catering, priorizamos a utilização de ingredientes frescos, locais, sazonais e de alta qualidade, assegurando opções que atendem a todos os gostos e necessidades alimentares, incluindo alternativas vegetarianas, veganas e sem glúten.
               </p>
             </div>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Ementas Personalizadas</h6>
+                <h6 className="v2">Flexibilidade</h6>
               </Copy>
               <p className="md">
-                Desenvolvemos ementas personalizadas para cada evento, tendo em conta as preferências dos nossos clientes, restrições alimentares e o tipo de celebração. Desde coffee breaks a jantares de gala, temos a solução ideal para o seu evento.
+                Com uma equipa experiente e dedicada, respondemos às mais recentes tendências gastronómicas. Oferecemos soluções para todos os tipos de eventos, desde casamentos e festas particulares a eventos corporativos, conferências e feiras profissionais. Cuidamos de toda a gastronomia, desde a conceção até ao serviço de mesa, ou simplesmente para desfrutar de momentos em família/amigos.
               </p>
             </div>
 
             <div className="cta-section">
-              <Button href="/contactos" label="Solicitar Orçamento" />
+              <Button href="/contacts" label="Solicitar Orçamento" />
             </div>
           </div>
         </div>

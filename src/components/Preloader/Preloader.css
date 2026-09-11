@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   pointer-events: auto;
+  background-color: var(--base-500, #f7f6f4);
 }
 
 .preloader-blocks {
@@ -39,26 +40,24 @@
   justify-content: center;
 }
 
+/* The CAPICCI mark is a compact square logo, not a full-width line, so it
+   is constrained to a sensible size and kept centred. overflow:visible is
+   required -- the leader-line "grow up from off-canvas" effect and the
+   snake-style wordmark entry both animate from outside the SVG's own
+   viewBox and must not be clipped by it. */
 .preloader-svg {
-  width: 100%;
+  width: min(46vw, 380px);
   height: auto;
-  min-height: 50vh;
   overflow: visible;
   visibility: hidden;
 }
 
-.preloader-path-base,
-.preloader-path-fill {
-  stroke-linecap: butt;
+@media (max-width: 700px) {
+  .preloader-svg {
+    width: min(62vw, 300px);
+  }
 }
 
-.preloader-path-base {
-  stroke: #242424;
-  stroke-width: 1.5;
-}
-
-.preloader-path-fill {
-  stroke: var(--base-300);
-  stroke-width: 2;
-  opacity: 0;
+.capicci-piece {
+  will-change: transform;
 }

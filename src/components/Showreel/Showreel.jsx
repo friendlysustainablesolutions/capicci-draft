@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flip } from "gsap/Flip";
 import { useGSAP } from "@gsap/react";
+import Button from "../Button/Button";
 
 import "./Showreel.css";
 
@@ -149,19 +150,19 @@ export default function Showreel() {
   return (
     <section className="showreel" ref={showreelRef}>
       <div className="showreel-header" id="showreel-header-1">
-        <img src="/assets/showreel-header.svg" alt="" />
+        <span aria-hidden="true">EVENTOS</span>
       </div>
 
       <div className="showreel-header" id="showreel-header-2">
-        <img src="/assets/showreel-header.svg" alt="" />
+        <span aria-hidden="true">EVENTOS</span>
       </div>
 
       <div className="showreel-header" id="showreel-header-3">
-        <img src="/assets/showreel-header.svg" alt="" />
+        <span aria-hidden="true">EVENTOS</span>
       </div>
 
       <div className="showreel-header" id="showreel-header-4">
-        <img src="/assets/showreel-header.svg" alt="" />
+        <span aria-hidden="true">EVENTOS</span>
       </div>
 
       <div className="container">
@@ -171,17 +172,23 @@ export default function Showreel() {
           <div className="showreel-marquee-container">
             <div className="showreel-marquee">
               <div className="showreel-marquee-track">
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
-                <p className="sm">CAPICCI – Events & Happiness</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="showreel-space-cta">
+          <p className="mono sm">[ MARVILA / ESPAÇOS ]</p>
+          <p className="v2">Venha conhecer os nossos espaços.</p>
+          <Button href="/spaces">Ver espaços</Button>
         </div>
       </div>
     </section>

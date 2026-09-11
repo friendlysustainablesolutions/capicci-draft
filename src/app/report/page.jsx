@@ -14,11 +14,9 @@ gsap.registerPlugin(ScrollTrigger);
 const REPORT_WIPE_START_ANGLE = 225;
 
 const reportImages = [
-  { src: "/images/img1.jpg", compassRotation: 0 },
-  { src: "/images/img2.jpg", compassRotation: 84 },
-  { src: "/images/img7.jpg", compassRotation: -30 },
-  { src: "/images/img4.jpg", compassRotation: 105 },
-  { src: "/images/img10.jpg", compassRotation: 130 },
+  { src: "/images/services/services_catering.jpg", compassRotation: 0 },
+  { src: "/images/services/services_decoration.jpg", compassRotation: 120 },
+  { src: "/images/services/services_graphic_design.jpg", compassRotation: 240 },
 ];
 
 const reportDataBlocks = [
@@ -108,7 +106,63 @@ function reportCreateDegreeLabel(degree) {
   return reportLabel;
 }
 
-export default function FieldReportPage() {
+function ReportVisualSection({ sectionRef, compassRef, images, dataBlocks }) {
+  return (
+    <section className="report-section" ref={sectionRef}>
+      <div className="report-canvas">
+        <div className="report-layer">
+          {images.map((img, i) => (
+            <div
+              className="report-img"
+              key={i}
+              style={{
+                backgroundImage: `url(${img.src})`,
+                zIndex: i,
+                maskImage: `conic-gradient(from ${REPORT_WIPE_START_ANGLE}deg, #000 0deg, transparent 0deg)`,
+                WebkitMaskImage: `conic-gradient(from ${REPORT_WIPE_START_ANGLE}deg, #000 0deg, transparent 0deg)`,
+              }}
+            >
+              {dataBlocks[i]?.map((block, j) => (
+                <div
+                  className={`report-data-block report-data-${block.position}`}
+                  key={j}
+                >
+                  <p className="sm">{block.label}</p>
+                  <p className="mono">{block.value}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <svg
+          ref={compassRef}
+          className="report-compass"
+          width={REPORT_COMPASS_SIZE}
+          height={REPORT_COMPASS_SIZE}
+          viewBox={`0 0 ${REPORT_COMPASS_SIZE} ${REPORT_COMPASS_SIZE}`}
+          xmlns="http://www.w3.org/2000/svg"
+        />
+        <div className="report-wiper-fixed">
+          <div className="report-wiper-line">
+            <div className="report-wiper-dot" />
+          </div>
+        </div>
+        <div className="report-wiper-hand">
+          <div className="report-wiper-line">
+            <div className="report-wiper-dot" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function FieldReportPage({
+  mode = "report",
+  visualImages = reportImages,
+  visualDataBlocks = reportDataBlocks,
+}) {
   const reportSectionRef = useRef(null);
   const reportCompassRef = useRef(null);
 
@@ -125,9 +179,11 @@ export default function FieldReportPage() {
       );
 
       const reportWipeStartAngle = REPORT_WIPE_START_ANGLE;
-      const reportTotal = reportImages.length;
-      const reportSegmentSize = 1 / reportTotal;
-      const reportCompassRotations = reportImages.map(
+      const reportTotal = visualImages.length;
+      const reportTransitionTotal =
+        mode === "services" ? Math.max(reportTotal - 1, 1) : reportTotal;
+      const reportSegmentSize = 1 / reportTransitionTotal;
+      const reportCompassRotations = visualImages.map(
         (img) => img.compassRotation ?? 0,
       );
       let reportCompassPrevSegmentIndex = -1;
@@ -140,12 +196,6 @@ export default function FieldReportPage() {
         "g",
       );
       reportCompassSvg.appendChild(reportCompassRingGroup);
-
-      for (let i = 0; i < 360; i += 2) {
-        reportCompassRingGroup.appendChild(reportCreateTick(i));
-        if (i % 30 === 0)
-          reportCompassRingGroup.appendChild(reportCreateDegreeLabel(i));
-      }
 
       for (let i = 0; i < reportTotal; i++) {
         const reportClip = `conic-gradient(from ${reportWipeStartAngle}deg, #000 0deg, transparent 0deg)`;
@@ -228,9 +278,9 @@ export default function FieldReportPage() {
         gsap.set(reportWiperFixed, { opacity: reportIsWiping ? 1 : 0 });
 
         for (let i = 0; i < reportTotal; i++) {
-          if (i < reportSegmentIndex) {
+          if (i <= reportSegmentIndex) {
             reportSetMask(reportLayers[i], 360);
-          } else if (i === reportSegmentIndex) {
+          } else if (i === reportSegmentIndex + 1) {
             reportSetMask(reportLayers[i], reportAngle);
           } else {
             reportSetMask(reportLayers[i], 0);
@@ -245,8 +295,9 @@ export default function FieldReportPage() {
         }
       }
 
-      const reportTotalScroll = window.innerHeight * 2 * reportTotal;
-      const reportExtraScroll = window.innerHeight * 2;
+      const reportTotalScroll =
+        window.innerHeight * 2 * reportTransitionTotal;
+      const reportExtraScroll = mode === "services" ? 0 : window.innerHeight * 2;
 
       const reportScrollTrigger = ScrollTrigger.create({
         trigger: reportSection,
@@ -259,6 +310,8 @@ export default function FieldReportPage() {
         },
       });
 
+      reportOnScroll(0);
+
       return () => {
         reportScrollTrigger.kill();
         gsap.killTweensOf([reportRingTweenState]);
@@ -268,6 +321,17 @@ export default function FieldReportPage() {
     },
     { scope: reportSectionRef },
   );
+
+  if (mode === "services") {
+    return (
+      <ReportVisualSection
+        sectionRef={reportSectionRef}
+        compassRef={reportCompassRef}
+        images={visualImages}
+        dataBlocks={visualDataBlocks}
+      />
+    );
+  }
 
   return (
     <>
@@ -337,53 +401,12 @@ export default function FieldReportPage() {
         </div>
       </section>
 
-      <section className="report-section" ref={reportSectionRef}>
-        <div className="report-canvas">
-          <div className="report-layer">
-            {reportImages.map((img, i) => (
-              <div
-                className="report-img"
-                key={i}
-                style={{
-                  backgroundImage: `url(${img.src})`,
-                  zIndex: i,
-                  maskImage: `conic-gradient(from ${REPORT_WIPE_START_ANGLE}deg, #000 0deg, transparent 0deg)`,
-                  WebkitMaskImage: `conic-gradient(from ${REPORT_WIPE_START_ANGLE}deg, #000 0deg, transparent 0deg)`,
-                }}
-              >
-                {reportDataBlocks[i]?.map((block, j) => (
-                  <div
-                    className={`report-data-block report-data-${block.position}`}
-                    key={j}
-                  >
-                    <p className="sm">{block.label}</p>
-                    <p className="mono">{block.value}</p>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <svg
-            ref={reportCompassRef}
-            className="report-compass"
-            width={REPORT_COMPASS_SIZE}
-            height={REPORT_COMPASS_SIZE}
-            viewBox={`0 0 ${REPORT_COMPASS_SIZE} ${REPORT_COMPASS_SIZE}`}
-            xmlns="http://www.w3.org/2000/svg"
-          />
-          <div className="report-wiper-fixed">
-            <div className="report-wiper-line">
-              <div className="report-wiper-dot" />
-            </div>
-          </div>
-          <div className="report-wiper-hand">
-            <div className="report-wiper-line">
-              <div className="report-wiper-dot" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <ReportVisualSection
+        sectionRef={reportSectionRef}
+        compassRef={reportCompassRef}
+        images={visualImages}
+        dataBlocks={visualDataBlocks}
+      />
 
       <section className="report-current-conditions">
         <div className="container">

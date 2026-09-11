@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import Button from "../Button/Button";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -16,20 +17,22 @@ const FOOTER_ARC_PATH =
   "M 0,280 C 300,280 450,40 700,40 C 950,40 1100,280 1400,280";
 
 const FOOTER_NAV_LEFT = [
-  { label: "About", href: "/about" },
+  { label: "Sobre", href: "/about" },
   { label: "Catering", href: "/catering" },
-  { label: "Events", href: "/events" },
-  { label: "Weddings", href: "/weddings" },
+  { label: "Eventos", href: "/events" },
+  { label: "Casamentos", href: "/weddings" },
 ];
 
 const FOOTER_NAV_RIGHT = [
-  { label: "Decoration", href: "/decoration" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Spaces", href: "/spaces" },
-  { label: "Contacts", href: "/contacts" },
+  { label: "Decoração e Aluguer", href: "/decoration" },
+  { label: "Galeria", href: "/gallery" },
+  { label: "Espaços", href: "/spaces" },
+  { label: "Contactos", href: "/contacts" },
 ];
 
-const FOOTER_SOCIALS = ["Instagram", "Twitter", "YouTube"];
+const FOOTER_SOCIALS = ["Instagram", "LinkedIn"];
+const WHATSAPP_NUMBER = "";
+const WHATSAPP_MESSAGE = "Olá, gostaria de saber mais sobre os serviços da CAPICCI.";
 
 export default function Footer() {
   const footerRef = useRef(null);
@@ -123,6 +126,16 @@ export default function Footer() {
               <p className="sm">Rua Carlos Anjos, Centro Empresarial Rambola, Armazém R/C A, nº 1387-A, Amoreira, 2645-178 Alcabideche</p>
               <p className="sm">+351 919 402 836* | +351 967 144 450* | geral@capicci.pt</p>
               <p className="xs">*Custo de uma chamada para a rede móvel nacional</p>
+              <Button
+                href={WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}` : "#"}
+                className={`footer-whatsapp${WHATSAPP_NUMBER ? "" : " footer-whatsapp--pending"}`}
+                aria-disabled={!WHATSAPP_NUMBER}
+                onClick={(event) => {
+                  if (!WHATSAPP_NUMBER) event.preventDefault();
+                }}
+              >
+                Falar pelo WhatsApp
+              </Button>
             </div>
           </div>
 
@@ -159,7 +172,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p className="sm">CAPICCI – EVENTS & HAPPINESS. ALL RIGHTS RESERVED.</p>
+          <p className="sm">LIVRO DE RECLAMAÇÕES | Gerir o consentimento | © CAPICCI - EVENTS & HAPPINESS. ALL RIGHTS RESERVED.</p>
         </div>
       </div>
     </footer>

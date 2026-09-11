@@ -11,7 +11,7 @@ export default function ContactsPage() {
           <div className="page-header-content">
             <Copy animateOnScroll={false} delay={0.3}>
               <h1 className="subheader">CAPICCI</h1>
-              <h1>Contacts</h1>
+              <h1>Contactos</h1>
             </Copy>
           </div>
         </div>
@@ -22,14 +22,14 @@ export default function ContactsPage() {
           <div className="content-wrapper">
             <Copy splitType="words">
               <p className="lg">
-                Get in touch with us to transform your event into a memorable experience. We are available to answer all your questions and help you plan the perfect day.
+                Entre em contacto connosco para saber mais sobre os nossos serviços e espaços.
               </p>
             </Copy>
 
             <div className="contact-grid">
               <div className="contact-card">
                 <Copy splitType="words">
-                  <h6 className="v2">Address</h6>
+                  <h6 className="v2">Morada</h6>
                 </Copy>
                 <p className="md">
                   Rua Carlos Anjos, Centro Empresarial Rambola, Armazém R/C A, nº 1387-A, Amoreira, 2645-178 Alcabideche
@@ -38,13 +38,13 @@ export default function ContactsPage() {
 
               <div className="contact-card">
                 <Copy splitType="words">
-                  <h6 className="v2">Phone</h6>
+                  <h6 className="v2">Contactos Telefónicos</h6>
                 </Copy>
                 <p className="md">
                   +351 919 402 836<br />
                   +351 967 144 450
                 </p>
-                <p className="xs">*Cost of a call to the national mobile network</p>
+                <p className="xs">*Custo de uma chamada para a rede móvel nacional</p>
               </div>
 
               <div className="contact-card">
@@ -58,23 +58,20 @@ export default function ContactsPage() {
 
               <div className="contact-card">
                 <Copy splitType="words">
-                  <h6 className="v2">Hours</h6>
+                  <h6 className="v2">Outra Localização Registada</h6>
                 </Copy>
-                <p className="md">
-                  Monday to Friday: 9h00 - 18h00<br />
-                  Saturday: 10h00 - 14h00
-                </p>
+                <p className="md">Praça David Leandro da Silva, 1950-064 Lisboa</p>
               </div>
             </div>
 
             <div className="cta-section">
-              <Button href="mailto:geral@capicci.pt" label="Send Email" />
+              <Button href="mailto:geral@capicci.pt" label="Enviar Email" />
             </div>
 
             <div className="contact-note">
               <Copy splitType="words">
                 <p className="sm">
-                  For events at warehouses 8 and 80, please contact us in advance to check date availability.
+                  Livro de Reclamações | Gerir o consentimento
                 </p>
               </Copy>
             </div>

@@ -12,26 +12,23 @@ import "./Menu.css";
 gsap.registerPlugin(useGSAP);
 
 const MENU_PRIMARY_LINKS = [
-  { href: "/about", label: "About" },
+  { href: "/about", label: "Sobre" },
   { href: "/catering", label: "Catering" },
-  { href: "/events", label: "Events" },
-  { href: "/weddings", label: "Weddings" },
-  { href: "/decoration", label: "Decoration" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/spaces", label: "Spaces" },
-  { href: "/contacts", label: "Contacts" },
+  { href: "/events", label: "Eventos" },
+  { href: "/weddings", label: "Casamentos" },
+  { href: "/decoration", label: "Decoração e Aluguer" },
+  { href: "/gallery", label: "Galeria" },
+  { href: "/spaces", label: "Espaços" },
+  { href: "/contacts", label: "Contactos" },
 ];
 
 const MENU_FOOTER_LINKS_LEFT = [
-  { href: "https://www.instagram.com/codegridweb", label: "Instagram" },
-  { href: "https://x.com/codegridweb", label: "X / Twitter" },
-  { href: "https://discord.com/invite/B8B9MXxuSS", label: "Discord" },
+  { href: "#", label: "Instagram" },
+  { href: "#", label: "LinkedIn" },
 ];
 
 const MENU_FOOTER_LINKS_RIGHT = [
-  { href: "https://vimeo.com/codegrid", label: "Vimeo" },
-  { href: "https://www.youtube.com/@codegrid", label: "YouTube" },
-  { href: "mailto:contact@codegrid.com", label: "Email" },
+  { href: "mailto:geral@capicci.pt", label: "Email" },
 ];
 
 function MenuLineLink({ href, label, className = "", onClick }) {
@@ -155,26 +152,28 @@ export default function Menu() {
     <div className="menu-container">
       <div className="menu" ref={menuRef}>
         <div className="menu-rail">
-          <Link
-            href="/"
-            className="menu-box menu-logo"
-            onClick={() => handleLinkClick("/")}
-          >
-            <img src="/logo.svg" alt="Home" />
-          </Link>
+          <div className="menu-box menu-rail-box">
+            <Link
+              href="/"
+              className="menu-logo"
+              onClick={() => handleLinkClick("/")}
+            >
+              <img src="/images/logo nobg capici.png" alt="Home" />
+            </Link>
 
-          <button
-            type="button"
-            className="menu-box menu-toggle"
-            onClick={handleToggle}
-            aria-expanded={isOpen}
-            aria-controls="main-menu-panel"
-          >
-            <span className="menu-toggle-mask">
-              <p className="mono sm menu-toggle-word">Menu</p>
-              <p className="mono sm menu-close-word">Close</p>
-            </span>
-          </button>
+            <button
+              type="button"
+              className="menu-toggle"
+              onClick={handleToggle}
+              aria-expanded={isOpen}
+              aria-controls="main-menu-panel"
+            >
+              <span className="menu-toggle-mask">
+                <p className="mono sm menu-toggle-word">Menu</p>
+                <p className="mono sm menu-close-word">Close</p>
+              </span>
+            </button>
+          </div>
         </div>
 
         <aside id="main-menu-panel" className="menu-panel">

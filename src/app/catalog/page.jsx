@@ -378,17 +378,17 @@ export default function CatalogPage() {
 
       <nav className="catalog-nav">
         <Copy variant="flicker" delay={0.85} animateOnScroll={false}>
-          <p className="mono sm">Clearance: Open</p>
+          <p className="mono sm">CAPICCI - Events & Happiness</p>
         </Copy>
         <Copy variant="flicker" delay={0.85} animateOnScroll={false}>
-          <p className="mono sm">Last Updated: 1987</p>
+          <p className="mono sm">Catálogo</p>
         </Copy>
       </nav>
 
       <div ref={catalogHeaderRef} className="catalog-header">
         <Copy animateOnScroll={false} delay={0.65}>
-          <h1 className="subheader">House of</h1>
-          <h1>Epochs</h1>
+          <h1 className="subheader">CAPICCI</h1>
+          <h1>Catálogo</h1>
         </Copy>
       </div>
     </section>

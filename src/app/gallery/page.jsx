@@ -23,7 +23,7 @@ export default function GalleryPage() {
           <div className="page-header-content">
             <Copy animateOnScroll={false} delay={0.3}>
               <h1 className="subheader">CAPICCI</h1>
-              <h1>Gallery</h1>
+              <h1>Galeria</h1>
             </Copy>
           </div>
         </div>
@@ -34,14 +34,14 @@ export default function GalleryPage() {
           <div className="content-wrapper">
             <Copy splitType="words">
               <p className="lg">
-                Explore our event gallery and discover how we transform moments into unforgettable memories.
+                CAPICCI - Events & Happiness
               </p>
             </Copy>
 
             <div className="gallery-grid">
               {galleryImages.map((image, index) => (
                 <div className="gallery-item" key={index}>
-                  <img src={image} alt={`Event ${index + 1}`} />
+                  <img src={image} alt={`CAPICCI - Events & Happiness ${index + 1}`} />
                 </div>
               ))}
             </div>

@@ -11,35 +11,31 @@ import "./FeaturedCards.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FEATURED_CARDS_DATA = [
+const DEFAULT_FEATURED_CARDS_DATA = [
   {
-    subtitle: "The Fallen",
-    title: "Arches of Vorn",
-    image: "/images/img1.jpg",
+    subtitle: "Lisboa",
+    title: "8 Marvila",
+    image: "/images/8-marvila.jpg",
   },
   {
-    subtitle: "The Silent",
-    title: "Monolith Drenn",
-    image: "/images/img2.jpg",
+    subtitle: "Alenquer",
+    title: "Quinta Aba da Serra",
+    image: "/images/quinta-aba-da-serra.jpg",
   },
   {
-    subtitle: "The Suspended",
-    title: "Orbs of Thessyn",
-    image: "/images/img3.jpg",
-  },
-  {
-    subtitle: "The Tethered Moon",
-    title: "Fields of Aruun",
-    image: "/images/img4.jpg",
-  },
-  {
-    subtitle: "The Flooded",
-    title: "Passage of Kael",
-    image: "/images/img5.jpg",
+    subtitle: "Coimbra",
+    title: "Quinta do Campo",
+    image: "/images/casamento_quinta_do_campo.jpg",
   },
 ];
 
-export default function FeaturedCards() {
+export default function FeaturedCards({
+  cards = DEFAULT_FEATURED_CARDS_DATA,
+  label = "[ ESPAÇOS ]",
+  description = "Na CAPICCI – Events & Happiness, sabemos que o local do evento é uma das peças-chave para o seu sucesso, por isso, oferecemos uma seleção de espaços únicos, cada um com o seu próprio charme e características distintas.",
+  buttonHref = "/spaces",
+  buttonLabel = "Conheça os Nossos Espaços",
+}) {
   const featuredCardsRef = useRef(null);
   const featuredCardsContainerRef = useRef(null);
 
@@ -124,15 +120,15 @@ export default function FeaturedCards() {
         <div className="featured-cards-wrapper">
           <div className="featured-cards-header">
             <Copy variant="flicker">
-              <p className="mono">[ Surveyed Lands ]</p>
+              <p className="mono">{label}</p>
             </Copy>
 
             <Copy splitType="words">
-              <h5 className="v2">Record of structures that refused to fall</h5>
+              <p className="v2">{description}</p>
             </Copy>
 
             <Copy variant="slide" delay={0.5}>
-              <Button href="/chronicles">Browse Chronicles</Button>
+              <Button href={buttonHref}>{buttonLabel}</Button>
             </Copy>
           </div>
 
@@ -140,7 +136,7 @@ export default function FeaturedCards() {
             className="featured-cards-container"
             ref={featuredCardsContainerRef}
           >
-            {FEATURED_CARDS_DATA.map((card) => (
+            {cards.map((card) => (
               <div className="featured-card" key={card.title}>
                 <div className="featured-card-img">
                   <img src={card.image} alt="" />
