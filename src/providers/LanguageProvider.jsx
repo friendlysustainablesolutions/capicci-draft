@@ -3,12 +3,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export const LANGUAGES = [
-  { code: "pt", label: "Português" },
-  { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "it", label: "Italiano" },
-  { code: "de", label: "Deutsch" },
+  { code: "pt", flag: "pt", label: "Português" },
+  { code: "en", flag: "gb", label: "English" },
+  { code: "es", flag: "es", label: "Español" },
+  { code: "fr", flag: "fr", label: "Français" },
+  { code: "it", flag: "it", label: "Italiano" },
+  { code: "de", flag: "de", label: "Deutsch" },
 ];
 
 const translations = {
@@ -20,7 +20,7 @@ const translations = {
     eventTitle: "Eventos", eventCaptionLabel: "[ EVENTOS CAPICCI ]", eventIntroTitle: "Do conceito à concretização.", eventIntro: "Cada projeto é uma oportunidade de criar algo extraordinário, com planeamento, produção, decoração, catering e logística integrados.", production: "[ PRODUÇÃO ]", productionTitle: "A energia acontece no terreno.", productionCopy: "Uma equipa experiente acompanha cada momento para que a experiência final seja fluida, envolvente e memorável.", soundOn: "Ligar som", soundOff: "Desligar som", unique: "[ EXPERIÊNCIAS ÚNICAS ]", scaleTitle: "A mesma atenção a cada escala.", scaleCopy: "Do evento corporativo à celebração particular, adaptamos cada solução ao espaço, ao público e ao objetivo do projeto, sempre com elevados padrões de qualidade.", eventLead: "Acreditamos que cada projeto é uma oportunidade de criar algo extraordinário e a nossa paixão por eventos reflete-se em cada detalhe, desde a sua conceção à sua execução, criando experiências únicas para os mais diversos tipos de eventos.", reach: "Alcance", reachCopy: "O nosso portfólio abrange uma vasta gama de eventos, desde pequenas celebrações até eventos de grande dimensão para grandes marcas internacionais, refletindo a nossa capacidade de adaptar cada evento a diferentes estilos, sempre com a mesma atenção aos detalhes e elevados padrões de qualidade.", logistics: "Logística Integrada", logisticsCopy: "Com uma equipa qualificada e experiente, simplificamos a nossa presença no terreno para assegurar um evento sem sobressaltos. Oferecemos serviços de planeamento, decoração, catering, produção e logística de forma integrada.", applications: "Aplicações", applicationsCopy: "Seja um casamento de sonho, uma festa de aniversário, um evento corporativo ou uma celebração especial, a CAPICCI dedica-se a cada detalhe para que o seu evento seja inesquecível.", planEvent: "Planear o seu evento",
     weddingHeading: "Tudo o que precisa para o seu dia perfeito.", weddingLead: "O casamento é mais do que um evento, é o início de uma nova história. Na CAPICCI - Events & Happiness, sabemos o quão importante é cada detalhe; por isso, trabalhamos de perto consigo para que cada desejo seja cumprido.", weddingDay: "[ UM DIA ÚNICO ]", weddingDetail: "Cada detalhe conta.", weddingTitle: "Criamos o cenário para a vossa história.", weddingCopy: "Do primeiro brinde à última dança, reunimos gastronomia, decoração e aluguer de material para que o espaço reflita a essência de cada casal.", weddingApproach: "[ A NOSSA ABORDAGEM ]", weddingMeasure: "Uma celebração com a vossa medida.", weddingStory: "Com uma experiência diversificada em sabores e técnicas, cada prato é preparado com uma dedicação que ultrapassa o simples ato de servir. A decoração e os materiais são escolhidos para criar uma atmosfera única e original.", startPlanning: "Começar a planear",
     decorationTitle: "Decoração e Aluguer", decorationLead: "Alugamos o nosso material de forma integrada ou independente, desde loiças a mobiliário e equipamento, para encontrar a solução certa para cada evento.", uniqueAesthetic: "[ ESTÉTICA ÚNICA ]", uniqueAestheticCopy: "Peças escolhidas para transformar cada espaço numa atmosfera original, personalizada e com a vossa visão.", sustainability: "[ SUSTENTABILIDADE ]", sustainabilityCopy: "Reutilizamos materiais e prolongamos a sua vida útil através de novas combinações e ambientes.", decorationImages: "Imagens de decoração", availableCategories: "Categorias de Material Disponível", materialCategories: "Categorias de material", moreInfo: "Pedir informações", emptyGallery: "Ainda não existem imagens disponíveis.", glasses: "Copos", crockery: "Loiças", tables: "Mesas e Cadeiras", furniture: "Mobiliário", miscellaneous: "Diversos",
-    galleryTitle: "Galeria", contactTitle: "Contactos", contactLead: "Entre em contacto para saber mais sobre os nossos serviços e espaços.", address: "Morada", phone: "Contactos Telefónicos", mobileCost: "*Custo de uma chamada para a rede móvel nacional", otherLocation: "Outra Localização Registada", sendEmail: "Enviar Email", complaints: "Livro de reclamações | Gerir o consentimento", contactHeading: "Contacte-nos", brand: "Marca", location: "Localização",
+    galleryTitle: "Galeria", contactTitle: "Contactos", contactLead: "Entre em contacto para saber mais sobre os nossos serviços e espaços.", address: "Morada", phone: "Contactos Telefónicos", mobileCost: "*Custo de uma chamada para a rede móvel nacional", otherLocation: "Outra Localização Registada", sendEmail: "Enviar Email", complaints: "Livro de reclamações | Gerir o consentimento", contactHeading: "Contacte-nos", brand: "Marca", location: "Localização", weddingVideoAlt: "Vídeo de casamento CAPICCI",
     footerWhatsapp: "Falar pelo WhatsApp", footerRights: "LIVRO DE RECLAMAÇÕES | Gerir o consentimento | © CAPICCI - EVENTS & HAPPINESS. TODOS OS DIREITOS RESERVADOS.", footerMobile: "*Custo de uma chamada para a rede móvel nacional", navPages: "Páginas principais", imageAlt: "Imagem de evento CAPICCI", catalogImageAlt: "Imagem CAPICCI - Events & Happiness",
     cateringLabel: "Catering", menuLabel: "Menu", design: "Design Gráfico", designValue: "Uma identidade com essência", proposals: "Propostas", proposalsValue: "Convites e brochuras", decorationLabel: "Decoração", decorationValue: "Ambientes únicos", hire: "Aluguer", hireValue: "Loiças, mobiliário e equipamento", menus: "Ementas", menusValue: "Tradicionais e alternativas", gastronomy: "Gastronomia versátil",
     industrial: "Industrial", rustic: "Rústico", centennial: "Centenária", guests150: "150 pessoas", guests300: "300 convidados", twoWarehouses: "2 armazéns", equippedSpace: "Espaço equipado", greenSpaces: "Espaços verdes", browseChronicles: "Explorar crónicas", reportAlt: "Plataforma de Rhovaan", reportSubtitle: "The Severed", reportTitle: "Isles of Rhovaan", reportDiscovery: "Descoberta", reportCurrent: "Condições atuais",
@@ -72,7 +72,13 @@ export function LanguageProvider({ children }) {
 
   useEffect(() => {
     const savedLanguage = window.localStorage.getItem("capicci-language");
-    if (translations[savedLanguage]) setLanguage(savedLanguage);
+    if (translations[savedLanguage]) {
+      setLanguage(savedLanguage);
+      return;
+    }
+
+    const browserLanguage = window.navigator.language?.split("-")[0];
+    if (translations[browserLanguage]) setLanguage(browserLanguage);
   }, []);
 
   const value = useMemo(

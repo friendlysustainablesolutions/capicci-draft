@@ -4,6 +4,7 @@ import Preloader, { isInitialLoad } from "@/components/Preloader/Preloader";
 import Showreel from "@/components/Showreel/Showreel";
 import About from "@/components/About/About";
 import FeaturedCards from "@/components/FeaturedCards/FeaturedCards";
+import WeddingCTA from "@/components/WeddingCTA/WeddingCTA";
 import Copy from "@/components/Copy/Copy";
 import { useLanguage } from "@/providers/LanguageProvider";
 
@@ -47,6 +48,8 @@ export default function Home() {
       <Showreel />
 
       <FeaturedCards />
+
+      <WeddingCTA />
     </>
   );
 }
