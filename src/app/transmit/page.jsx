@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Copy from "@/components/Copy/Copy";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./transmit.css";
 
@@ -15,27 +16,27 @@ const transmitCards = [
     id: "transmit-card-1",
     image: "/transmit/transmit-card-1.jpg",
     index: "01",
-    label: "Email",
+    labelKey: "email",
     value: "geral@capicci.pt",
-    label2: "Marca",
+    label2Key: "brand",
     value2: "CAPICCI - Events & Happiness",
   },
   {
     id: "transmit-card-2",
     image: "/transmit/transmit-card-2.jpg",
     index: "02",
-    label: "Telefone",
+    labelKey: "phone",
     value: "+351 919 402 836",
-    label2: "Telefone",
+    label2Key: "phone",
     value2: "+351 967 144 450",
   },
   {
     id: "transmit-card-3",
     image: "/transmit/transmit-card-3.jpg",
     index: "03",
-    label: "Morada",
+    labelKey: "address",
     value: "Amoreira, Alcabideche",
-    label2: "Localização",
+    label2Key: "location",
     value2: "Praça David Leandro da Silva, Lisboa",
   },
 ];
@@ -45,7 +46,7 @@ const MOBILE_BREAKPOINT = 1000;
 export default function TransmitPage({
   mode = "contact",
   cards = transmitCards,
-  heading = "Contacte-nos",
+  heading,
   className = "",
 }) {
   const transmitStickyRef = useRef(null);
@@ -53,6 +54,8 @@ export default function TransmitPage({
   const transmitHeaderRef = useRef(null);
   const transmitGapCompleted = useRef(false);
   const transmitFlipCompleted = useRef(false);
+  const transmitHeaderHidden = useRef(false);
+  const { t } = useLanguage();
 
   useGSAP(
     () => {
@@ -83,10 +86,14 @@ export default function TransmitPage({
 
         transmitGapCompleted.current = false;
         transmitFlipCompleted.current = false;
+        transmitHeaderHidden.current = false;
 
         if (window.innerWidth < MOBILE_BREAKPOINT && mode !== "weddings") return;
 
-        gsap.set(transmitHeader, { y: 40, opacity: 0 });
+        gsap.set(transmitHeader, {
+          y: mode === "weddings" ? 0 : 40,
+          opacity: mode === "weddings" ? 1 : 0,
+        });
 
         transmitScrollTrigger = ScrollTrigger.create({
           trigger: transmitSection,
@@ -97,44 +104,83 @@ export default function TransmitPage({
           pinSpacing: true,
           onUpdate: (self) => {
             const transmitProgress = self.progress;
+            const headerHideProgress = isMobileWeddings ? 0.02 : 0.7;
+
+            if (
+              mode === "weddings" &&
+              transmitProgress <= 0.001 &&
+              transmitHeaderHidden.current
+            ) {
+              transmitHeaderHidden.current = false;
+              gsap.to(transmitHeader, {
+                opacity: 1,
+                duration: 0.35,
+                ease: "power2.out",
+              });
+            }
+
+            if (
+              mode === "weddings" &&
+              transmitProgress >= headerHideProgress &&
+              !transmitHeaderHidden.current
+            ) {
+              transmitHeaderHidden.current = true;
+              gsap.to(transmitHeader, {
+                opacity: 0,
+                duration: 0.35,
+                ease: "power2.out",
+              });
+            }
 
             if (isMobileWeddings) {
               const mobileProgress = gsap.utils.clamp(0, 1, transmitProgress);
-              gsap.set(transmitHeader, {
-                y: gsap.utils.mapRange(0, 0.2, 40, 0, mobileProgress),
-                opacity: mobileProgress > 0.02 ? 1 : 0,
-              });
-              gsap.set(transmitCardEls[0], {
-                yPercent: -100 * mobileProgress,
-                rotation: -8 * mobileProgress,
-              });
-              gsap.set(transmitCardEls[1], {
-                yPercent: 0,
-                rotation: 0,
-              });
-              gsap.set(transmitCardEls[2], {
-                yPercent: 100 * mobileProgress,
-                rotation: 8 * mobileProgress,
+              if (!transmitHeaderHidden.current) {
+                gsap.set(transmitHeader, {
+                  y: 0,
+                  opacity: 1,
+                });
+              }
+              transmitCardEls.forEach((card, index) => {
+                const cardProgress = gsap.utils.clamp(
+                  0,
+                  1,
+                  (mobileProgress - index * 0.12) / 0.45,
+                );
+                gsap.set(card, {
+                  yPercent: 0,
+                  rotationY: 180 * cardProgress,
+                });
               });
               return;
             }
 
-            if (transmitProgress >= 0.1 && transmitProgress <= 0.25) {
-              const transmitHeaderProgress = gsap.utils.mapRange(
-                0.1,
-                0.25,
-                0,
-                1,
-                transmitProgress,
-              );
-              gsap.set(transmitHeader, {
-                y: gsap.utils.mapRange(0, 1, 40, 0, transmitHeaderProgress),
-                opacity: transmitHeaderProgress,
-              });
-            } else if (transmitProgress < 0.1) {
-              gsap.set(transmitHeader, { y: 40, opacity: 0 });
-            } else {
-              gsap.set(transmitHeader, { y: 0, opacity: 1 });
+            if (!(mode === "weddings" && transmitHeaderHidden.current)) {
+              if (transmitProgress >= 0.1 && transmitProgress <= 0.25) {
+                const transmitHeaderProgress = gsap.utils.mapRange(
+                  0.1,
+                  0.25,
+                  0,
+                  1,
+                  transmitProgress,
+                );
+                gsap.set(transmitHeader, {
+                  y: gsap.utils.mapRange(
+                    0,
+                    1,
+                    mode === "weddings" ? 0 : 40,
+                    0,
+                    transmitHeaderProgress,
+                  ),
+                  opacity: mode === "weddings" ? 1 : transmitHeaderProgress,
+                });
+              } else if (transmitProgress < 0.1) {
+                gsap.set(transmitHeader, {
+                  y: mode === "weddings" ? 0 : 40,
+                  opacity: mode === "weddings" ? 1 : 0,
+                });
+              } else {
+                gsap.set(transmitHeader, { y: 0, opacity: 1 });
+              }
             }
 
             if (transmitProgress <= 0.25) {
@@ -253,7 +299,7 @@ export default function TransmitPage({
     <section className={`transmit-sticky ${className}`.trim()} ref={transmitStickyRef}>
       <div className="container">
         <div className="transmit-sticky-header" ref={transmitHeaderRef}>
-          <h6 className="v2">{heading}</h6>
+          <h6 className="v2">{heading || t("contactHeading")}</h6>
         </div>
 
         <div className="transmit-card-container" ref={transmitContainerRef}>
@@ -266,19 +312,19 @@ export default function TransmitPage({
                   {card.mobileImage && (
                     <source media="(max-width: 1000px)" srcSet={card.mobileImage} />
                   )}
-                  <img src={card.image} alt={card.label} />
+                  <img src={card.image} alt={t(card.labelKey || "imageAlt")} />
                 </picture>
               </div>
               <div className="transmit-card-back">
                 <span className="transmit-card-index">[ {card.index} ]</span>
                 <div className="transmit-card-info">
                   <div className="transmit-card-block">
-                    <p className="mono sm">{card.label}</p>
-                    <p className="lg">{card.value}</p>
+                    <p className="mono sm">{card.labelKey ? t(card.labelKey) : card.label}</p>
+                    <p className="lg">{card.valueKey ? t(card.valueKey) : card.value}</p>
                   </div>
                   <div className="transmit-card-block">
-                    <p className="mono sm">{card.label2}</p>
-                    <p className="lg">{card.value2}</p>
+                    <p className="mono sm">{card.label2Key ? t(card.label2Key) : card.label2}</p>
+                    <p className="lg">{card.value2Key ? t(card.value2Key) : card.value2}</p>
                   </div>
                 </div>
               </div>
@@ -298,7 +344,7 @@ export default function TransmitPage({
           <div className="transmit-hero-header">
             <Copy animateOnScroll={false} delay={0.65}>
               <h1 className="subheader">CAPICCI</h1>
-              <h1>Contactos</h1>
+              <h1>{t("contactTitle")}</h1>
             </Copy>
           </div>
           <div className="transmit-hero-footer">

@@ -237,7 +237,7 @@ div.pin-spacer:has(> .transmit-sticky) {
   }
 
   .transmit-card-front {
-    display: none;
+    display: block;
   }
 
   .transmit-card-back {

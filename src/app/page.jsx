@@ -5,10 +5,12 @@ import Showreel from "@/components/Showreel/Showreel";
 import About from "@/components/About/About";
 import FeaturedCards from "@/components/FeaturedCards/FeaturedCards";
 import Copy from "@/components/Copy/Copy";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./home.css";
 
 export default function Home() {
+  const { t } = useLanguage();
   const heroDelay = isInitialLoad ? 7 : 0.5;
   const footerDelay = isInitialLoad ? 7.5 : 0.75;
 
@@ -31,7 +33,7 @@ export default function Home() {
 
           <div className="hero-footer">
             <Copy variant="flicker" delay={footerDelay} animateOnScroll={false}>
-              <p className="mono sm">Events that Matter</p>
+              <p className="mono sm">{t("homeTagline")}</p>
             </Copy>
             <Copy variant="flicker" delay={footerDelay} animateOnScroll={false}>
               <p className="mono sm">[ Since 1999 ]</p>

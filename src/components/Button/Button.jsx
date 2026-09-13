@@ -6,6 +6,7 @@ import "./Buttons.css";
 export default function Button({
   href = "/",
   children,
+  label,
   variant = "default",
   theme = "light",
   icon,
@@ -22,7 +23,7 @@ export default function Button({
       {...props}
     >
       <span className="button__label">
-        <p className="mono sm">{children}</p>
+        <p className="mono sm">{children ?? label}</p>
       </span>
 
       {isDefaultVariant && <span className="button__icon">{resolvedIcon}</span>}

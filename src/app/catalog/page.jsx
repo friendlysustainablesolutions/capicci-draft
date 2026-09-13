@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import Copy from "@/components/Copy/Copy";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./catalog.css";
 
@@ -23,9 +24,9 @@ const catalogParams = {
   rows: 7,
   columns: 7,
   curvature: 5,
-  spacing: 10,
-  imageWidth: 7,
-  imageHeight: 4.5,
+  spacing: 8.2,
+  imageWidth: 8.2,
+  imageHeight: 5.3,
   depth: 7.5,
   elevation: 0,
   lookAtRange: 20,
@@ -77,7 +78,7 @@ function createRoundedRectShape(w, h, r) {
   return shape;
 }
 
-function buildCatalogGrid(rows, cols) {
+function buildCatalogGrid(rows, cols, sourceImages) {
   const grid = [];
   for (let row = 0; row < rows; row++) {
     grid[row] = [];
@@ -86,7 +87,9 @@ function buildCatalogGrid(rows, cols) {
       if (col > 0) excluded.add(grid[row][col - 1]);
       if (row > 0) excluded.add(grid[row - 1][col]);
 
-      const available = images.map((_, i) => i).filter((i) => !excluded.has(i));
+      const available = sourceImages
+        .map((_, i) => i)
+        .filter((i) => !excluded.has(i));
 
       grid[row][col] = available[Math.floor(Math.random() * available.length)];
     }
@@ -94,8 +97,8 @@ function buildCatalogGrid(rows, cols) {
   return grid;
 }
 
-function createImagePlane(row, col, loader, imageIndex) {
-  const src = images[imageIndex];
+function createImagePlane(row, col, loader, imageIndex, sourceImages) {
+  const src = sourceImages[imageIndex];
 
   const catalogRadius = 0.15;
   const shape = createRoundedRectShape(
@@ -151,7 +154,12 @@ function createImagePlane(row, col, loader, imageIndex) {
   return plane;
 }
 
-export default function CatalogPage() {
+export default function CatalogPage({
+  images: sourceImages = images,
+  eyebrow = "CAPICCI - Events & Happiness",
+  title = "Catálogo",
+}) {
+  const { t } = useLanguage();
   const catalogCanvasRef = useRef(null);
   const catalogHeaderRef = useRef(null);
 
@@ -184,6 +192,7 @@ export default function CatalogPage() {
     const catalogGrid = buildCatalogGrid(
       catalogParams.rows,
       catalogParams.columns,
+      sourceImages,
     );
     const catalogPlanes = [];
 
@@ -194,6 +203,7 @@ export default function CatalogPage() {
           col,
           catalogLoader,
           catalogGrid[row][col],
+          sourceImages,
         );
         catalogPlanes.push(plane);
         catalogScene.add(plane);
@@ -370,7 +380,7 @@ export default function CatalogPage() {
       });
       catalogRenderer.dispose();
     };
-  }, []);
+  }, [sourceImages]);
 
   return (
     <section className="catalog">
@@ -378,17 +388,17 @@ export default function CatalogPage() {
 
       <nav className="catalog-nav">
         <Copy variant="flicker" delay={0.85} animateOnScroll={false}>
-          <p className="mono sm">CAPICCI - Events & Happiness</p>
+          <p className="mono sm">{eyebrow}</p>
         </Copy>
         <Copy variant="flicker" delay={0.85} animateOnScroll={false}>
-          <p className="mono sm">Catálogo</p>
+          <p className="mono sm">{title}</p>
         </Copy>
       </nav>
 
       <div ref={catalogHeaderRef} className="catalog-header">
         <Copy animateOnScroll={false} delay={0.65}>
           <h1 className="subheader">CAPICCI</h1>
-          <h1>Catálogo</h1>
+          <h1>{title}</h1>
         </Copy>
       </div>
     </section>

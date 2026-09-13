@@ -3,6 +3,7 @@
 import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
 import TransmitPage from "@/app/transmit/page";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./weddings.css";
 
@@ -26,10 +27,10 @@ const weddingServiceCards = [
     mobileImage: "/images/weddings/casamento_7.jpeg",
     split: "left",
     index: "01",
-    label: "Catering",
-    value: "Sabores e técnicas",
-    label2: "Experiência",
-    value2: "Menus clássicos e alternativas audazes",
+    labelKey: "catering",
+    valueKey: "gastronomy",
+    label2Key: "about",
+    value2Key: "weddingCopy",
   },
   {
     id: "transmit-card-2",
@@ -37,10 +38,10 @@ const weddingServiceCards = [
     mobileImage: "/images/weddings/casamento_7.jpeg",
     split: "middle",
     index: "02",
-    label: "Decoração e Aluguer",
-    value: "Uma estética única",
-    label2: "Personalização",
-    value2: "Cada espaço com a vossa essência",
+    labelKey: "decoration",
+    valueKey: "uniqueAestheticCopy",
+    label2Key: "sustainability",
+    value2Key: "uniqueAestheticCopy",
   },
   {
     id: "transmit-card-3",
@@ -48,20 +49,21 @@ const weddingServiceCards = [
     mobileImage: "/images/weddings/casamento_7.jpeg",
     split: "right",
     index: "03",
-    label: "O vosso dia",
-    value: "Uma celebração única",
-    label2: "Dedicação",
-    value2: "Cada desejo tratado com atenção",
+    labelKey: "weddings",
+    valueKey: "weddingDetail",
+    label2Key: "aboutHow",
+    value2Key: "weddingStory",
   },
 ];
 
 export default function WeddingsPage() {
+  const { t } = useLanguage();
   return (
     <>
       <TransmitPage
         mode="weddings"
         className="weddings-flip-section"
-        heading="Porque o vosso dia merece ser especial"
+        heading={t("weddingHeading")}
         cards={weddingServiceCards}
       />
 
@@ -69,7 +71,7 @@ export default function WeddingsPage() {
         <div className="container">
           <Copy splitType="words">
             <p className="lg">
-              O casamento é mais do que um evento, é o início de uma nova história. Na CAPICCI - Events & Happiness, sabemos o quão importante é cada detalhe; por isso, trabalhamos de perto consigo para que cada desejo seja cumprido. Afinal, este é um dia único e inesquecível, pelo que cada pormenor deve ser tratado com total dedicação.
+              {t("weddingLead")}
             </p>
           </Copy>
         </div>
@@ -78,26 +80,26 @@ export default function WeddingsPage() {
       <section className="weddings-showcase">
         <div className="container">
           <div className="weddings-hero-image">
-            <img src={weddingImages[0].src} alt={weddingImages[0].alt} />
+            <img src={weddingImages[0].src} alt={t("imageAlt")} />
             <div className="weddings-image-caption">
-              <p className="mono sm">[ UM DIA ÚNICO ]</p>
-              <p className="v2">Cada detalhe conta.</p>
+              <p className="mono sm">{t("weddingDay")}</p>
+              <p className="v2">{t("weddingDetail")}</p>
             </div>
           </div>
 
           <div className="weddings-intro">
             <Copy splitType="words">
-              <h3 className="v2">Criamos o cenário para a vossa história.</h3>
+              <h3 className="v2">{t("weddingTitle")}</h3>
             </Copy>
             <p className="md">
-              Do primeiro brinde à última dança, reunimos gastronomia, decoração e aluguer de material para que o espaço reflita a essência de cada casal.
+              {t("weddingCopy")}
             </p>
           </div>
 
           <div className="weddings-image-row">
             {weddingImages.slice(1, 4).map((image, index) => (
               <div className={`weddings-image-card weddings-image-card-${index + 1}`} key={image.src}>
-                <img src={image.src} alt={image.alt} />
+                <img src={image.src} alt={t("imageAlt")} />
               </div>
             ))}
           </div>
@@ -105,22 +107,22 @@ export default function WeddingsPage() {
           <div className="weddings-story-grid">
             <div className="weddings-story-copy">
               <Copy splitType="words">
-                <p className="mono">[ A NOSSA ABORDAGEM ]</p>
-                <h4 className="v2">Uma celebração com a vossa medida.</h4>
+                <p className="mono">{t("weddingApproach")}</p>
+                <h4 className="v2">{t("weddingMeasure")}</h4>
               </Copy>
               <p className="md">
-                Com uma experiência diversificada em sabores e técnicas, cada prato é preparado com uma dedicação que ultrapassa o simples ato de servir. A decoração e os materiais são escolhidos para criar uma atmosfera única e original.
+                {t("weddingStory")}
               </p>
             </div>
             <div className="weddings-story-image">
-              <img src={weddingImages[4].src} alt={weddingImages[4].alt} />
+              <img src={weddingImages[4].src} alt={t("imageAlt")} />
             </div>
           </div>
 
           <div className="weddings-mosaic">
             {weddingImages.slice(5).map((image) => (
               <div className="weddings-mosaic-item" key={image.src}>
-                <img src={image.src} alt={image.alt} />
+                <img src={image.src} alt={t("imageAlt")} />
               </div>
             ))}
           </div>
@@ -128,7 +130,7 @@ export default function WeddingsPage() {
       </section>
 
       <div className="weddings-final-cta">
-        <Button href="/contacts" label="Começar a planear" />
+        <Button href="/contacts" label={t("startPlanning")} />
       </div>
     </>
   );

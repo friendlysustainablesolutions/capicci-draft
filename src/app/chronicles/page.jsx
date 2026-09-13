@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import { SplitText } from "gsap/SplitText";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./chronicles.css";
 
@@ -128,6 +129,7 @@ export default function ChroniclesPage({
   titleHref = "/report",
   counterPrefix = "CHR",
 }) {
+  const { t } = useLanguage();
   const chroniclesPageRef = useRef(null);
   const chroniclesSlidesRef = useRef(null);
   const chroniclesCurrentRef = useRef(0);
@@ -440,17 +442,17 @@ export default function ChroniclesPage({
               style={{ backgroundImage: `url(${item.image})` }}
             />
             <div className="chronicles-slide-content">
-              <p className="mono chronicles-slide-year">{item.year}</p>
+              <p className="mono chronicles-slide-year">{item.yearKey ? t(item.yearKey) : item.year}</p>
               <div className="chronicles-slide-title-block">
                 <h1 className="subheader">{item.subtitle}</h1>
                 <ChroniclesTitleLink href={titleHref} title={item.title} />
               </div>
               <div className="chronicles-slide-footer">
-                <p className="mono sm">{item.location}</p>
+                <p className="mono sm">{item.locationKey ? t(item.locationKey) : item.location}</p>
                 <div className="chronicles-slide-tags">
                   {item.tags.map((tag, j) => (
                     <span className="chronicles-slide-tag" key={j}>
-                      <p className="mono sm">{tag}</p>
+                      <p className="mono sm">{tag.key ? t(tag.key) : tag}</p>
                     </span>
                   ))}
                 </div>

@@ -1,53 +1,28 @@
 "use client";
 
-import Copy from "@/components/Copy/Copy";
+import CatalogPage from "@/app/catalog/page";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const galleryImages = [
-  "/images/img1.jpg",
-  "/images/img2.jpg",
-  "/images/img3.jpg",
-  "/images/img4.jpg",
-  "/images/img5.jpg",
-  "/images/img6.jpg",
-  "/images/img7.jpg",
-  "/images/img8.jpg",
-  "/images/img9.jpg",
-  "/images/img10.jpg",
+  "/images/galeria/galeria_1.jpg",
+  "/images/galeria/galeria_2.jpg",
+  "/images/galeria/galeria_3.jpg",
+  "/images/galeria/galeria_4.jpg",
+  "/images/galeria/galeria_5.jpg",
+  "/images/galeria/galeria_6.jpg",
+  "/images/galeria/galeria_7.jpg",
+  "/images/galeria/galeria_8.jpg",
+  "/images/galeria/galeria_9.jpg",
+  "/images/galeria/galeria_10.jpg",
 ];
 
 export default function GalleryPage() {
+  const { t } = useLanguage();
   return (
-    <>
-      <section className="page-header">
-        <div className="container">
-          <div className="page-header-content">
-            <Copy animateOnScroll={false} delay={0.3}>
-              <h1 className="subheader">CAPICCI</h1>
-              <h1>Galeria</h1>
-            </Copy>
-          </div>
-        </div>
-      </section>
-
-      <section className="page-content">
-        <div className="container">
-          <div className="content-wrapper">
-            <Copy splitType="words">
-              <p className="lg">
-                CAPICCI - Events & Happiness
-              </p>
-            </Copy>
-
-            <div className="gallery-grid">
-              {galleryImages.map((image, index) => (
-                <div className="gallery-item" key={index}>
-                  <img src={image} alt={`CAPICCI - Events & Happiness ${index + 1}`} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+    <CatalogPage
+      images={galleryImages}
+      eyebrow="CAPICCI - Events & Happiness"
+      title={t("galleryTitle")}
+    />
   );
 }

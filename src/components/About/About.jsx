@@ -3,6 +3,7 @@
 import Copy from "../Copy/Copy";
 import FieldReportPage from "@/app/report/page";
 import Button from "../Button/Button";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./About.css";
 
@@ -37,6 +38,22 @@ const serviceDataBlocks = [
 ];
 
 export default function About({ showIntro = true }) {
+  const { t } = useLanguage();
+  const serviceDataBlocks = [
+    [
+      { label: t("cateringLabel"), value: t("gastronomy"), position: "top-left" },
+      { label: t("menus"), value: t("menusValue"), position: "bottom-right" },
+    ],
+    [
+      { label: t("decorationLabel"), value: t("decorationValue"), position: "top-right" },
+      { label: t("hire"), value: t("hireValue"), position: "bottom-left" },
+    ],
+    [
+      { label: t("design"), value: t("designValue"), position: "top-left" },
+      { label: t("proposals"), value: t("proposalsValue"), position: "bottom-right" },
+    ],
+  ];
+
   return (
     <section className="about">
       <div className="container">
@@ -44,12 +61,12 @@ export default function About({ showIntro = true }) {
           {showIntro && (
             <div className="about-intro">
             <Copy variant="flicker">
-              <p className="mono about-label">[ SOBRE ]</p>
+              <p className="mono about-label">[ {t("aboutTitle").toUpperCase()} ]</p>
             </Copy>
 
             <Copy splitType="words">
               <h5 className="v2 about-title">
-                A CAPICCI - Events & Happiness é uma jovem empresa de eventos que surge com uma imagem renovada, mas sustentada por uma equipa de profissionais com mais de 25 anos de experiência no setor de eventos.
+                {t("aboutIntro")}
               </h5>
             </Copy>
             </div>
@@ -57,13 +74,13 @@ export default function About({ showIntro = true }) {
 
           <div className="about-services-intro">
             <Copy variant="flicker">
-              <p className="mono about-services-label">[ COMO TRABALHAMOS ]</p>
+              <p className="mono about-services-label">[ {t("aboutHow")} ]</p>
             </Copy>
             <Copy splitType="words">
-              <h3 className="v2 about-services-title">Soluções completas para momentos com significado.</h3>
+              <h1 className="v2 about-services-title">{t("aboutSolutions")}</h1>
             </Copy>
             <p className="lg about-services-copy">
-              O nosso profundo conhecimento do mercado, aliado a uma sólida rede de parceiros e fornecedores de confiança fomentada ao longo de décadas de projetos em conjunto, garante a capacidade de compreender e concretizar o seu evento, seja este corporativo ou particular.
+              {t("aboutCopy")}
             </p>
           </div>
 
@@ -80,12 +97,12 @@ export default function About({ showIntro = true }) {
               <p className="mono about-footer-label">[ MARVILA / O 8 ]</p>
             </Copy>
             <Copy splitType="words">
-              <h4 className="v2 about-footer-title">Um espaço para acontecer.</h4>
+              <h4 className="v2 about-footer-title">{t("aboutSpace")}</h4>
             </Copy>
             <p className="lg about-footer-copy">
-              Somos também responsáveis pela gestão de eventos nos armazéns 8 e 8.0 de Marvila, onde o nosso catering é exclusivo.
+              {t("aboutSpaceCopy")}
             </p>
-            <Button href="/spaces">Conheça o 8 Marvila</Button>
+            <Button href="/spaces">{t("aboutSpaceButton")}</Button>
           </div>
         </div>
       </div>

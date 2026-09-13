@@ -6,6 +6,7 @@ import Button from "../Button/Button";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./Footer.css";
 
@@ -17,27 +18,28 @@ const FOOTER_ARC_PATH =
   "M 0,280 C 300,280 450,40 700,40 C 950,40 1100,280 1400,280";
 
 const FOOTER_NAV_LEFT = [
-  { label: "Sobre", href: "/about" },
-  { label: "Catering", href: "/catering" },
-  { label: "Eventos", href: "/events" },
-  { label: "Casamentos", href: "/weddings" },
+  { label: "about", href: "/about" },
+  { label: "catering", href: "/catering" },
+  { label: "events", href: "/events" },
+  { label: "weddings", href: "/weddings" },
 ];
 
 const FOOTER_NAV_RIGHT = [
-  { label: "Decoração e Aluguer", href: "/decoration" },
-  { label: "Galeria", href: "/gallery" },
-  { label: "Espaços", href: "/spaces" },
-  { label: "Contactos", href: "/contacts" },
+  { label: "decoration", href: "/decoration" },
+  { label: "gallery", href: "/gallery" },
+  { label: "spaces", href: "/spaces" },
+  { label: "contacts", href: "/contacts" },
 ];
 
 const FOOTER_SOCIALS = ["Instagram", "LinkedIn"];
 const WHATSAPP_NUMBER = "";
-const WHATSAPP_MESSAGE = "Olá, gostaria de saber mais sobre os serviços da CAPICCI.";
+const WHATSAPP_MESSAGE = "I would like to know more about CAPICCI services.";
 
 export default function Footer() {
   const footerRef = useRef(null);
   const footerArcRef = useRef(null);
   const footerTextPathRef = useRef(null);
+  const { t } = useLanguage();
 
   useGSAP(
     () => {
@@ -125,7 +127,7 @@ export default function Footer() {
             <div className="footer-info">
               <p className="sm">Rua Carlos Anjos, Centro Empresarial Rambola, Armazém R/C A, nº 1387-A, Amoreira, 2645-178 Alcabideche</p>
               <p className="sm">+351 919 402 836* | +351 967 144 450* | geral@capicci.pt</p>
-              <p className="xs">*Custo de uma chamada para a rede móvel nacional</p>
+              <p className="xs">{t("footerMobile")}</p>
               <Button
                 href={WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}` : "#"}
                 className={`footer-whatsapp${WHATSAPP_NUMBER ? "" : " footer-whatsapp--pending"}`}
@@ -134,7 +136,7 @@ export default function Footer() {
                   if (!WHATSAPP_NUMBER) event.preventDefault();
                 }}
               >
-                Falar pelo WhatsApp
+                {t("footerWhatsapp")}
               </Button>
             </div>
           </div>
@@ -143,7 +145,7 @@ export default function Footer() {
             <div className="footer-nav footer-nav-left">
               {FOOTER_NAV_LEFT.map(({ label, href }) => (
                 <Link href={href} key={label} className="footer-nav-link">
-                  <p className="mono sm">{label}</p>
+                  <p className="mono sm">{t(label)}</p>
                 </Link>
               ))}
             </div>
@@ -151,7 +153,7 @@ export default function Footer() {
             <div className="footer-nav footer-nav-right">
               {FOOTER_NAV_RIGHT.map(({ label, href }) => (
                 <Link href={href} key={label} className="footer-nav-link">
-                  <p className="mono sm">{label}</p>
+                  <p className="mono sm">{t(label)}</p>
                 </Link>
               ))}
             </div>
@@ -172,7 +174,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p className="sm">LIVRO DE RECLAMAÇÕES | Gerir o consentimento | © CAPICCI - EVENTS & HAPPINESS. ALL RIGHTS RESERVED.</p>
+          <p className="sm">{t("footerRights")}</p>
         </div>
       </div>
     </footer>

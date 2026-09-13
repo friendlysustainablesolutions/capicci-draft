@@ -6,20 +6,21 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./Menu.css";
 
 gsap.registerPlugin(useGSAP);
 
 const MENU_PRIMARY_LINKS = [
-  { href: "/about", label: "Sobre" },
-  { href: "/catering", label: "Catering" },
-  { href: "/events", label: "Eventos" },
-  { href: "/weddings", label: "Casamentos" },
-  { href: "/decoration", label: "Decoração e Aluguer" },
-  { href: "/gallery", label: "Galeria" },
-  { href: "/spaces", label: "Espaços" },
-  { href: "/contacts", label: "Contactos" },
+  { href: "/about", label: "about" },
+  { href: "/catering", label: "catering" },
+  { href: "/events", label: "events" },
+  { href: "/weddings", label: "weddings" },
+  { href: "/decoration", label: "decoration" },
+  { href: "/gallery", label: "gallery" },
+  { href: "/spaces", label: "spaces" },
+  { href: "/contacts", label: "contacts" },
 ];
 
 const MENU_FOOTER_LINKS_LEFT = [
@@ -48,6 +49,7 @@ export default function Menu() {
   const menuCloseTlRef = useRef(null);
   const lenis = useLenis();
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   useGSAP(
     () => {
@@ -158,7 +160,7 @@ export default function Menu() {
               className="menu-logo"
               onClick={() => handleLinkClick("/")}
             >
-              <img src="/images/logo nobg capici.png" alt="Home" />
+              <img src="/images/logo nobg capici.png" alt={t("home")} />
             </Link>
 
             <button
@@ -169,8 +171,8 @@ export default function Menu() {
               aria-controls="main-menu-panel"
             >
               <span className="menu-toggle-mask">
-                <p className="mono sm menu-toggle-word">Menu</p>
-                <p className="mono sm menu-close-word">Close</p>
+                <p className="mono sm menu-toggle-word">{t("menu")}</p>
+                <p className="mono sm menu-close-word">{t("close")}</p>
               </span>
             </button>
           </div>
@@ -181,12 +183,12 @@ export default function Menu() {
             <p className="mono sm">CAPICCI – Events & Happiness</p>
           </div>
 
-          <nav className="menu-panel-nav" aria-label="Main pages">
+          <nav className="menu-panel-nav" aria-label={t("navPages")}>
             {MENU_PRIMARY_LINKS.map((link) => (
               <MenuLineLink
                 key={link.href}
                 href={link.href}
-                label={link.label}
+                label={t(link.label)}
                 className="menu-link menu-link-main"
                 onClick={() => handleLinkClick(link.href)}
               />
@@ -199,7 +201,7 @@ export default function Menu() {
                 <MenuLineLink
                   key={link.label}
                   href={link.href}
-                  label={link.label}
+                  label={link.label === "Email" ? t("email") : link.label}
                   className="menu-link menu-link-footer"
                   onClick={() => handleLinkClick(link.href)}
                 />

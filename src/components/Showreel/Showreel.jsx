@@ -6,12 +6,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flip } from "gsap/Flip";
 import { useGSAP } from "@gsap/react";
 import Button from "../Button/Button";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./Showreel.css";
 
 gsap.registerPlugin(ScrollTrigger, Flip);
 
 export default function Showreel() {
+  const { t } = useLanguage();
   const showreelRef = useRef(null);
 
   useGSAP(
@@ -172,12 +174,7 @@ export default function Showreel() {
           <div className="showreel-marquee-container">
             <div className="showreel-marquee">
               <div className="showreel-marquee-track">
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+                {Array.from({ length: 6 }, (_, index) => <p className="sm" key={index}>{t("spacesButton")}</p>)}
                 <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
                 <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
               </div>

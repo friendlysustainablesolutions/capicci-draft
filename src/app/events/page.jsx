@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
+import { useLenis } from "lenis/react";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./events.css";
 
@@ -18,39 +20,72 @@ const eventImages = [
 ];
 
 export default function EventsPage() {
+  const { t } = useLanguage();
   const [isVideoTwoMuted, setIsVideoTwoMuted] = useState(true);
+  const eventsHeroRef = useRef(null);
+  const eventsHeroVideoRef = useRef(null);
+  const eventsHeroHeaderRef = useRef(null);
+
+  useLenis((lenis) => {
+    const video = eventsHeroVideoRef.current;
+    const header = eventsHeroHeaderRef.current;
+    const hero = eventsHeroRef.current;
+    if (!video || !header || !hero) return;
+
+    const isMobile = window.innerWidth <= 700;
+    const heroDistance = window.innerHeight * 2.15;
+    const startWidth = window.innerWidth;
+    const targetWidth = isMobile
+      ? window.innerWidth - 24
+      : Math.min(window.innerWidth - 24, 960);
+    const startHeight = window.innerHeight;
+    const targetHeight = isMobile
+      ? window.innerWidth * 0.52
+      : Math.max(700, Math.min(window.innerHeight * 0.86, 820));
+    const localScroll = Math.max(0, -hero.getBoundingClientRect().top);
+    const progress = Math.max(0, Math.min(1, localScroll / heroDistance));
+    const videoProgress = Math.max(0, Math.min(1, (progress - 0.3) / 0.48));
+    const revealProgress = Math.max(0, Math.min(1, (videoProgress - 0.08) / 0.55));
+
+    video.style.width = `${startWidth + (targetWidth - startWidth) * videoProgress}px`;
+    video.style.height = `${startHeight + (targetHeight - startHeight) * videoProgress}px`;
+    video.style.borderRadius = `${12 * videoProgress}px`;
+    video.style.transform = `translateY(${window.innerHeight * 0.34 * videoProgress}px)`;
+    header.style.transform = `translateY(${(isMobile ? 18 : 28) * (1 - revealProgress)}px)`;
+    header.style.opacity = `${revealProgress}`;
+  });
 
   return (
     <>
-      <section className="page-header">
-        <div className="container">
+      <section className="events-hero" ref={eventsHeroRef}>
+        <div className="events-hero-header" ref={eventsHeroHeaderRef}>
           <div className="page-header-content">
             <Copy animateOnScroll={false} delay={0.3}>
               <h1 className="subheader">CAPICCI</h1>
-              <h1>Eventos</h1>
+              <h1>{t("eventTitle")}</h1>
             </Copy>
+          </div>
+        </div>
+        <div className="events-hero-video-wrap" ref={eventsHeroVideoRef}>
+          <video autoPlay muted loop playsInline preload="metadata">
+            <source src="/images/events/events_video.mp4" type="video/mp4" />
+          </video>
+          <div className="events-video-caption">
+            <p className="mono sm">{t("eventCaptionLabel")}</p>
+            <p className="v2">{t("eventsCaption")}</p>
           </div>
         </div>
       </section>
 
       <section className="events-showcase">
         <div className="container">
-          <div className="events-video-wrap">
-            <video autoPlay muted loop playsInline preload="metadata">
-              <source src="/images/events/events_video.mp4" type="video/mp4" />
-            </video>
-            <div className="events-video-caption">
-              <p className="mono sm">[ EVENTOS CAPICCI ]</p>
-              <p className="v2">Pensados ao detalhe.</p>
-            </div>
-          </div>
 
           <div className="events-intro">
             <Copy splitType="words">
-              <h3 className="v2">Do conceito à concretização.</h3>
+              <h3 className="v2">{t("eventIntroTitle")}</h3>
             </Copy>
             <p className="md">
-              Cada projeto é uma oportunidade de criar algo extraordinário, com planeamento, produção, decoração, catering e logística integrados.
+              {t("eventIntro")}
             </p>
           </div>
 
@@ -63,19 +98,19 @@ export default function EventsPage() {
                 type="button"
                 className="events-video-sound-button"
                 onClick={() => setIsVideoTwoMuted((isMuted) => !isMuted)}
-                aria-label={isVideoTwoMuted ? "Ligar som do vídeo" : "Desligar som do vídeo"}
+                aria-label={isVideoTwoMuted ? t("soundOn") : t("soundOff")}
                 aria-pressed={!isVideoTwoMuted}
               >
-                {isVideoTwoMuted ? "Ligar som" : "Desligar som"}
+                {isVideoTwoMuted ? t("soundOn") : t("soundOff")}
               </button>
             </div>
             <div className="events-secondary-video-copy">
               <Copy splitType="words">
-                <p className="mono">[ PRODUÇÃO ]</p>
-                <h4 className="v2">A energia acontece no terreno.</h4>
+                <p className="mono">{t("production")}</p>
+                <h4 className="v2">{t("productionTitle")}</h4>
               </Copy>
               <p className="md">
-                Uma equipa experiente acompanha cada momento para que a experiência final seja fluida, envolvente e memorável.
+                {t("productionCopy")}
               </p>
             </div>
           </div>
@@ -83,22 +118,22 @@ export default function EventsPage() {
           <div className="events-image-row">
             {eventImages.slice(0, 3).map((image, index) => (
               <div className={`events-image-card events-image-card-${index + 1}`} key={image.src}>
-                <img src={image.src} alt={image.alt} />
+                <img src={image.src} alt={t("imageAlt")} />
               </div>
             ))}
           </div>
 
           <div className="events-story-grid">
             <div className="events-story-image">
-              <img src={eventImages[3].src} alt={eventImages[3].alt} />
+              <img src={eventImages[3].src} alt={t("imageAlt")} />
             </div>
             <div className="events-story-copy">
               <Copy splitType="words">
-                <p className="mono">[ EXPERIÊNCIAS ÚNICAS ]</p>
-                <h4 className="v2">A mesma atenção a cada escala.</h4>
+                <p className="mono">{t("unique")}</p>
+                <h4 className="v2">{t("scaleTitle")}</h4>
               </Copy>
               <p className="md">
-                Do evento corporativo à celebração particular, adaptamos cada solução ao espaço, ao público e ao objetivo do projeto, sempre com elevados padrões de qualidade.
+                {t("scaleCopy")}
               </p>
             </div>
           </div>
@@ -106,7 +141,7 @@ export default function EventsPage() {
           <div className="events-mosaic">
             {eventImages.slice(4).map((image) => (
               <div className="events-mosaic-item" key={image.src}>
-                <img src={image.src} alt={image.alt} />
+                <img src={image.src} alt={t("imageAlt")} />
               </div>
             ))}
           </div>
@@ -118,39 +153,39 @@ export default function EventsPage() {
           <div className="content-wrapper">
             <Copy splitType="words">
               <p className="lg">
-                Acreditamos que cada projeto é uma oportunidade de criar algo extraordinário e a nossa paixão por eventos reflete-se em cada detalhe, desde a sua conceção à sua execução, criando experiências únicas para os mais diversos tipos de eventos.
+                {t("eventLead")}
               </p>
             </Copy>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Alcance</h6>
+                <h6 className="v2">{t("reach")}</h6>
               </Copy>
               <p className="md">
-                O nosso portfólio abrange uma vasta gama de eventos, desde pequenas celebrações até eventos de grande dimensão para grandes marcas internacionais, refletindo a nossa capacidade de adaptar cada evento a diferentes estilos, sempre com a mesma atenção aos detalhes e elevados padrões de qualidade.
+                {t("reachCopy")}
               </p>
             </div>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Logística Integrada</h6>
+                <h6 className="v2">{t("logistics")}</h6>
               </Copy>
               <p className="md">
-                Com uma equipa qualificada e experiente, simplificamos a nossa presença no terreno para assegurar um evento sem sobressaltos. Oferecemos serviços de planeamento, decoração, catering, produção e logística de forma integrada.
+                {t("logisticsCopy")}
               </p>
             </div>
 
             <div className="content-section">
               <Copy splitType="words">
-                <h6 className="v2">Aplicações</h6>
+                <h6 className="v2">{t("applications")}</h6>
               </Copy>
               <p className="md">
-                Seja um casamento de sonho, uma festa de aniversário, um evento corporativo ou uma celebração especial, a CAPICCI dedica-se a cada detalhe para que o seu evento seja inesquecível.
+                {t("applicationsCopy")}
               </p>
             </div>
 
             <div className="cta-section">
-              <Button href="/contacts" label="Planear o seu evento" />
+              <Button href="/contacts" label={t("planEvent")} />
             </div>
           </div>
         </div>

@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { ReactLenis } from "lenis/react";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
-import MusicToggle from "./components/MusicToggle/MusicToggle";
+import LanguageSelector from "./components/LanguageSelector/LanguageSelector";
+import { LanguageProvider } from "./providers/LanguageProvider";
 import TransitionProvider from "./providers/TransitionProvider";
 
 const MOBILE_BREAKPOINT = 1000;
@@ -60,17 +61,19 @@ export default function ClientLayout({ children }) {
   const showFooter = !FOOTER_EXCLUDED_ROUTES.includes(pathname);
 
   return (
-    <TransitionProvider>
-      <ReactLenis root options={lenisOptions}>
-        <div className="page" ref={pageRef}>
-          <Menu />
-          <MusicToggle />
-          <div className="page-wrapper" ref={pageWrapperRef}>
-            {children}
-            {showFooter && <Footer />}
+    <LanguageProvider>
+      <TransitionProvider>
+        <ReactLenis root options={lenisOptions}>
+          <div className="page" ref={pageRef}>
+            <Menu />
+            <LanguageSelector />
+            <div className="page-wrapper" ref={pageWrapperRef}>
+              {children}
+              {showFooter && <Footer />}
+            </div>
           </div>
-        </div>
-      </ReactLenis>
-    </TransitionProvider>
+        </ReactLenis>
+      </TransitionProvider>
+    </LanguageProvider>
   );
 }

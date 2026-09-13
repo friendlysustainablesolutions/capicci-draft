@@ -61,3 +61,7 @@
 .capicci-piece {
   will-change: transform;
 }
+
+.preloader-cell {
+  background-color: var(--base-100, #f7f6f4);
+}

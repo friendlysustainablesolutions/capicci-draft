@@ -180,9 +180,9 @@ div.pin-spacer:has(> .weddings-flip-section) {
 }
 
 @media (min-width: 1001px) {
-  .weddings-flip-section .transmit-card-container {
-    width: 100%;
-    transform: none;
+  .weddings-flip-section.transmit-sticky .transmit-card-container {
+    width: 100% !important;
+    transform: none !important;
   }
 
   .weddings-flip-section .transmit-card {
@@ -192,7 +192,9 @@ div.pin-spacer:has(> .weddings-flip-section) {
 }
 
 .weddings-flip-section .transmit-sticky-header {
-  top: 14%;
+  top: 50%;
+  z-index: 5;
+  transform: translate(-50%, -50%);
   max-width: 720px;
   white-space: normal;
   color: var(--base-100);
@@ -218,12 +220,12 @@ div.pin-spacer:has(> .weddings-flip-section) {
 }
 
 @media (max-width: 1000px) {
-  .weddings-flip-section .transmit-sticky {
+  .weddings-flip-section.transmit-sticky {
     height: 100svh;
     padding: 0;
   }
 
-  .weddings-flip-section .transmit-sticky .container {
+  .weddings-flip-section .container {
     position: relative;
     gap: 0;
     height: 100%;
@@ -233,10 +235,10 @@ div.pin-spacer:has(> .weddings-flip-section) {
 
   .weddings-flip-section .transmit-sticky-header {
     position: absolute;
-    top: 12%;
+    top: 50%;
     left: 50%;
     z-index: 5;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     width: min(90vw, 420px);
     color: var(--base-100);
   }
@@ -248,7 +250,7 @@ div.pin-spacer:has(> .weddings-flip-section) {
     height: 100%;
     gap: 0;
     transform: none;
-    perspective: 1000px;
+    perspective: none;
   }
 
   .weddings-flip-section .transmit-card {
@@ -260,25 +262,29 @@ div.pin-spacer:has(> .weddings-flip-section) {
     aspect-ratio: auto;
     border-radius: 0;
     transform-style: preserve-3d;
+    transform-origin: center;
   }
 
   .weddings-flip-section .transmit-card-front,
   .weddings-flip-section .transmit-card-back {
-    display: flex !important;
     border-radius: 0;
   }
 
   .weddings-flip-section .transmit-card-front {
-    z-index: 2;
-    backface-visibility: visible;
+    display: block !important;
+    backface-visibility: hidden;
   }
 
   .weddings-flip-section .transmit-card-back {
-    display: none !important;
+    display: flex !important;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
   }
 
-  .weddings-flip-section .transmit-card-front {
-    transform: none !important;
+  .weddings-flip-section .transmit-card-split picture {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .weddings-flip-section .transmit-card-split img {

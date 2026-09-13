@@ -226,6 +226,49 @@ div.pin-spacer:has(> .report-section) {
   right: 10%;
 }
 
+@media screen and (min-width: 1001px) {
+  .about-services-report .report-data-block {
+    width: min(22vw, 300px);
+    gap: 0.4rem;
+  }
+
+  .about-services-report .report-data-block p {
+    font-size: clamp(1.8rem, 2.5vw, 3rem);
+    line-height: 1.05;
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.95),
+      0 0 12px rgba(0, 0, 0, 0.8);
+  }
+
+  .about-services-report .report-data-block p.mono {
+    font-size: clamp(1rem, 1.2vw, 1.3rem);
+    line-height: 1.2;
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.95),
+      0 0 10px rgba(0, 0, 0, 0.85);
+  }
+
+  .about-services-report .report-data-top-left {
+    top: 32%;
+    left: 34%;
+  }
+
+  .about-services-report .report-data-top-right {
+    top: 35%;
+    right: 25%;
+  }
+
+  .about-services-report .report-data-bottom-left {
+    bottom: 30%;
+    left: 30%;
+  }
+
+  .about-services-report .report-data-bottom-right {
+    bottom: 27%;
+    right: 25%;
+  }
+}
+
 .report-compass {
   grid-area: 1 / 1 / -1 / -1;
   width: 70vmin;

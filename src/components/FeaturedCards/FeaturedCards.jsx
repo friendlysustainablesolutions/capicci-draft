@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Button from "../Button/Button";
 import Copy from "../Copy/Copy";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./FeaturedCards.css";
 
@@ -36,6 +37,7 @@ export default function FeaturedCards({
   buttonHref = "/spaces",
   buttonLabel = "Conheça os Nossos Espaços",
 }) {
+  const { t } = useLanguage();
   const featuredCardsRef = useRef(null);
   const featuredCardsContainerRef = useRef(null);
 
@@ -120,15 +122,15 @@ export default function FeaturedCards({
         <div className="featured-cards-wrapper">
           <div className="featured-cards-header">
             <Copy variant="flicker">
-              <p className="mono">{label}</p>
+              <p className="mono">{t("spacesLabel")}</p>
             </Copy>
 
             <Copy splitType="words">
-              <p className="v2">{description}</p>
+              <p className="v2">{t("spacesDescription")}</p>
             </Copy>
 
             <Copy variant="slide" delay={0.5}>
-              <Button href={buttonHref}>{buttonLabel}</Button>
+              <Button href={buttonHref}>{t("spacesButton")}</Button>
             </Copy>
           </div>
 
@@ -139,7 +141,7 @@ export default function FeaturedCards({
             {cards.map((card) => (
               <div className="featured-card" key={card.title}>
                 <div className="featured-card-img">
-                  <img src={card.image} alt="" />
+                  <img src={card.image} alt={`${card.subtitle} - ${card.title}`} />
                 </div>
                 <div className="featured-card-content">
                   <h6 className="subheader">{card.subtitle}</h6>

@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Button from "@/components/Button/Button";
 import Copy from "@/components/Copy/Copy";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./report.css";
 
@@ -106,7 +107,7 @@ function reportCreateDegreeLabel(degree) {
   return reportLabel;
 }
 
-function ReportVisualSection({ sectionRef, compassRef, images, dataBlocks }) {
+function ReportVisualSection({ sectionRef, compassRef, images, dataBlocks, t }) {
   return (
     <section className="report-section" ref={sectionRef}>
       <div className="report-canvas">
@@ -127,8 +128,8 @@ function ReportVisualSection({ sectionRef, compassRef, images, dataBlocks }) {
                   className={`report-data-block report-data-${block.position}`}
                   key={j}
                 >
-                  <p className="sm">{block.label}</p>
-                  <p className="mono">{block.value}</p>
+                  <p className="sm">{block.labelKey ? t(block.labelKey) : block.label}</p>
+                  <p className="mono">{block.valueKey ? t(block.valueKey) : block.value}</p>
                 </div>
               ))}
             </div>
@@ -163,6 +164,7 @@ export default function FieldReportPage({
   visualImages = reportImages,
   visualDataBlocks = reportDataBlocks,
 }) {
+  const { t } = useLanguage();
   const reportSectionRef = useRef(null);
   const reportCompassRef = useRef(null);
 
@@ -329,6 +331,7 @@ export default function FieldReportPage({
         compassRef={reportCompassRef}
         images={visualImages}
         dataBlocks={visualDataBlocks}
+        t={t}
       />
     );
   }
@@ -339,13 +342,13 @@ export default function FieldReportPage({
         <div className="container">
           <div className="report-hero-grid">
             <div className="report-hero-image">
-              <img src="/images/img9.jpg" alt="Rhovaan Shelf" />
+              <img src="/images/img9.jpg" alt={t("reportAlt")} />
             </div>
             <div className="report-hero-right">
               <div className="report-header">
                 <Copy animateOnScroll={false} delay={0.65}>
-                  <h1 className="subheader">The Severed</h1>
-                  <h1>Isles of Rhovaan</h1>
+                  <h1 className="subheader">{t("reportSubtitle")}</h1>
+                  <h1>{t("reportTitle")}</h1>
                 </Copy>
               </div>
               <div className="report-hero-meta">
@@ -373,27 +376,17 @@ export default function FieldReportPage({
             <div className="report-copy-empty" />
             <div className="report-copy-content">
               <Copy splitType="words">
-                <h5 className="v2">Discovery</h5>
+                <h5 className="v2">{t("reportDiscovery")}</h5>
               </Copy>
               <Copy splitType="lines">
                 <p className="lg">
-                  First observed by a cartographic survey team in 1961 during a
-                  routine aerial pass over the southern volcanic corridor. Pilot
-                  Renaud Maric logged what he described as &ldquo;shadows with
-                  no corresponding ground feature&rdquo; before returning to
-                  base. A second flight confirmed the presence of suspended
-                  landmasses.
+                  {t("reportDiscovery1")}
                 </p>
               </Copy>
 
               <Copy splitType="lines">
                 <p className="lg">
-                  The report was filed as a surveying error and shelved for
-                  nearly two decades. In 1979 a ground team led by Dr. Emara
-                  Voss reached the shelf on foot and confirmed the islands were
-                  physical, stable, and inhabited by wildlife. The finding
-                  prompted the establishment of a permanent observation outpost
-                  along the basin&rsquo;s northern rim.
+                  {t("reportDiscovery2")}
                 </p>
               </Copy>
             </div>
@@ -406,6 +399,7 @@ export default function FieldReportPage({
         compassRef={reportCompassRef}
         images={visualImages}
         dataBlocks={visualDataBlocks}
+        t={t}
       />
 
       <section className="report-current-conditions">
@@ -414,31 +408,22 @@ export default function FieldReportPage({
             <div className="report-copy-empty" />
             <div className="report-copy-content">
               <Copy splitType="words">
-                <h5 className="v2">Current Conditions</h5>
+                <h5 className="v2">{t("reportCurrent")}</h5>
               </Copy>
               <Copy splitType="lines">
                 <p className="lg">
-                  All seven islands maintain their original elevation and
-                  position within a tolerance of less than one meter across four
-                  decades of continuous measurement. The basin floor beneath
-                  them has proven far less stable.
+                  {t("reportCurrent1")}
                 </p>
               </Copy>
 
               <Copy splitType="lines">
                 <p className="lg">
-                  Two new lava channels have opened since 1979 and sulfur output
-                  has increased by an estimated thirty percent. Three of the
-                  original observation posts have been abandoned due to toxic
-                  gas concentrations at ground level. The islands themselves
-                  remain inert, temperate, and undisturbed. Birdsong has been
-                  reported from the largest island by every survey team since
-                  the first ground expedition.
+                  {t("reportCurrent2")}
                 </p>
               </Copy>
 
               <Copy variant="slide" delay={0.5}>
-                <Button href="/chronicles">Browse Chronicles</Button>
+                <Button href="/chronicles">{t("browseChronicles")}</Button>
               </Copy>
             </div>
           </div>

@@ -1,0 +1,43 @@
+.language-selector-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 2000px;
+  height: 100svh;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.language-selector {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 4.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.4rem;
+  background: var(--base-100);
+  color: var(--base-500);
+  cursor: pointer;
+  pointer-events: auto;
+  font-family: "DMMono";
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.language-selector-label {
+  opacity: 0.55;
+}
+
+.language-selector select {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
