@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Copy from "@/components/Copy/Copy";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./catalog.css";
 
-const images = [
+const defaultImages = [
   "/catalog/img1.jpg",
   "/catalog/img2.jpg",
   "/catalog/img3.jpg",
@@ -72,7 +72,7 @@ function createRoundedRectShape(w, h, r) {
   shape.lineTo(w / 2, h / 2 - r);
   shape.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
   shape.lineTo(-w / 2 + r, h / 2);
-  shape.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+  shape.quadraticCurveTo(-w / 2, h / 2, -w / 2 - r, h / 2);
   shape.lineTo(-w / 2, -h / 2 + r);
   shape.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
   return shape;
@@ -104,7 +104,7 @@ function createImagePlane(row, col, loader, imageIndex, sourceImages) {
   const shape = createRoundedRectShape(
     catalogParams.imageWidth,
     catalogParams.imageHeight,
-    catalogRadius,
+    catalogRadius
   );
   const geometry = new THREE.ShapeGeometry(shape);
 
@@ -136,44 +136,85 @@ function createImagePlane(row, col, loader, imageIndex, sourceImages) {
   plane.rotation.x = rotationX;
   plane.rotation.y = rotationY;
 
-  plane.userData.basePosition = { x, y, z };
-  plane.userData.baseRotation = { x: rotationX, y: rotationY, z: 0 };
-  plane.userData.parallaxFactor = Math.random() * 0.5 + 0.5;
-  plane.userData.randomOffset = {
-    x: Math.random() * 2 - 1,
-    y: Math.random() * 2 - 1,
-    z: Math.random() * 2 - 1,
+  plane.userData = {
+    imageIndex,
+    imageSrc: src,
+    basePosition: { x, y, z },
+    baseRotation: { x: rotationX, y: rotationY, z: 0 },
+    parallaxFactor: Math.random() * 0.5 + 0.5,
+    randomOffset: {
+      x: Math.random() * 2 - 1,
+      y: Math.random() * 2 - 1,
+      z: Math.random() * 2 - 1,
+    },
+    rotationModifier: {
+      x: Math.random() * 0.15 - 0.075,
+      y: Math.random() * 0.15 - 0.075,
+      z: Math.random() * 0.2 - 0.1,
+    },
+    phaseOffset: Math.random() * Math.PI * 2,
   };
-  plane.userData.rotationModifier = {
-    x: Math.random() * 0.15 - 0.075,
-    y: Math.random() * 0.15 - 0.075,
-    z: Math.random() * 0.2 - 0.1,
-  };
-  plane.userData.phaseOffset = Math.random() * Math.PI * 2;
 
   return plane;
 }
 
 export default function CatalogPage({
-  images: sourceImages = images,
   eyebrow = "CAPICCI - Events & Happiness",
-  title = "Catálogo",
+  title = "Galeria",
 }) {
   const { t } = useLanguage();
-  const catalogCanvasRef = useRef(null);
-  const catalogHeaderRef = useRef(null);
+const catalogSectionRef = useRef(null);
+const catalogCanvasRef = useRef(null);
+const catalogHeaderRef = useRef(null);
+
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
+  // Fetch images from /public/images/galeria
+  useEffect(() => {
+    async function fetchGaleriaImages() {
+      try {
+        const res = await fetch(`/api/gallery?folder=galeria`);
+        const data = await res.json();
+        if (data.images && data.images.length > 0) {
+          setGalleryImages(data.images.map((item) => item.src));
+        } else {
+          setGalleryImages(defaultImages);
+        }
+      } catch (error) {
+        console.error("Failed to load galeria images:", error);
+        setGalleryImages(defaultImages);
+      }
+    }
+
+    fetchGaleriaImages();
+  }, []);
 
   useEffect(() => {
+    if (galleryImages.length === 0) return;
+
+    const catalogSection = catalogSectionRef.current;
     const catalogCanvas = catalogCanvasRef.current;
     const catalogHeader = catalogHeaderRef.current;
-    if (!catalogCanvas) return;
+    if (!catalogCanvas || !catalogSection) return;
+
+    // Use actual container bounding rectangle to avoid overflow gaps
+    const getContainerBounds = () => {
+      const rect = catalogSection.getBoundingClientRect();
+      return {
+        width: rect.width || window.innerWidth,
+        height: rect.height || window.innerHeight,
+      };
+    };
+
+    let { width, height } = getContainerBounds();
 
     const catalogScene = new THREE.Scene();
     const catalogCamera = new THREE.PerspectiveCamera(
       25,
-      window.innerWidth / window.innerHeight,
+      width / height,
       0.1,
-      1000,
+      1000
     );
     catalogCamera.position.set(0, 0, 40);
 
@@ -182,17 +223,19 @@ export default function CatalogPage({
       antialias: true,
       alpha: true,
     });
-    catalogRenderer.setSize(window.innerWidth, window.innerHeight);
+    catalogRenderer.setSize(width, height);
     catalogRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     catalogRenderer.setClearColor(0x000000, 0);
     catalogRenderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const catalogLoader = new THREE.TextureLoader();
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
     const catalogGrid = buildCatalogGrid(
       catalogParams.rows,
       catalogParams.columns,
-      sourceImages,
+      galleryImages
     );
     const catalogPlanes = [];
 
@@ -203,7 +246,7 @@ export default function CatalogPage({
           col,
           catalogLoader,
           catalogGrid[row][col],
-          sourceImages,
+          galleryImages
         );
         catalogPlanes.push(plane);
         catalogScene.add(plane);
@@ -225,6 +268,8 @@ export default function CatalogPage({
     let dragStartY = 0;
     let dragBaseX = 0;
     let dragBaseY = 0;
+    let clickStartX = 0;
+    let clickStartY = 0;
 
     function isMobile() {
       return window.innerWidth < MOBILE_BREAKPOINT;
@@ -242,10 +287,36 @@ export default function CatalogPage({
     function catalogOnMouseMove(e) {
       if (isMobile()) return;
 
-      const nx = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-      const ny =
-        (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+      const bounds = getContainerBounds();
+      const nx = (e.clientX - bounds.width / 2) / (bounds.width / 2);
+      const ny = (e.clientY - bounds.height / 2) / (bounds.height / 2);
       updateFromNormalized(nx, ny);
+    }
+
+    function onPointerDown(e) {
+      clickStartX = e.clientX;
+      clickStartY = e.clientY;
+    }
+
+    function onPointerUp(e) {
+      const dist = Math.hypot(e.clientX - clickStartX, e.clientY - clickStartY);
+      if (dist > 6) return; // Prevent triggering click during drag
+
+      const bounds = getContainerBounds();
+      const rect = catalogCanvas.getBoundingClientRect();
+      const canvasX = e.clientX - rect.left;
+      const canvasY = e.clientY - rect.top;
+
+      mouse.x = (canvasX / bounds.width) * 2 - 1;
+      mouse.y = -(canvasY / bounds.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, catalogCamera);
+      const intersects = raycaster.intersectObjects(catalogPlanes);
+
+      if (intersects.length > 0) {
+        const clickedPlane = intersects[0].object;
+        setSelectedIndex(clickedPlane.userData.imageIndex);
+      }
     }
 
     function onTouchStart(e) {
@@ -262,13 +333,14 @@ export default function CatalogPage({
       if (!isMobile() || !isDragging) return;
       e.preventDefault();
 
+      const bounds = getContainerBounds();
       const touch = e.touches[0];
-      const dx = (touch.clientX - dragStartX) / (window.innerWidth / 2);
-      const dy = (touch.clientY - dragStartY) / (window.innerHeight / 2);
+      const dx = (touch.clientX - dragStartX) / (bounds.width / 2);
+      const dy = (touch.clientY - dragStartY) / (bounds.height / 2);
 
       updateFromNormalized(
         dragBaseX + dx * DRAG_SENSITIVITY,
-        dragBaseY + dy * DRAG_SENSITIVITY,
+        dragBaseY + dy * DRAG_SENSITIVITY
       );
     }
 
@@ -277,19 +349,19 @@ export default function CatalogPage({
     }
 
     function catalogOnResize() {
-      catalogCamera.aspect = window.innerWidth / window.innerHeight;
+      const newBounds = getContainerBounds();
+      catalogCamera.aspect = newBounds.width / newBounds.height;
       catalogCamera.updateProjectionMatrix();
-      catalogRenderer.setSize(window.innerWidth, window.innerHeight);
+      catalogRenderer.setSize(newBounds.width, newBounds.height);
     }
 
     window.addEventListener("mousemove", catalogOnMouseMove);
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("resize", catalogOnResize);
-    catalogCanvas.addEventListener("touchstart", onTouchStart, {
-      passive: true,
-    });
-    catalogCanvas.addEventListener("touchmove", onTouchMove, {
-      passive: false,
-    });
+
+    catalogCanvas.addEventListener("touchstart", onTouchStart, { passive: true });
+    catalogCanvas.addEventListener("touchmove", onTouchMove, { passive: false });
     catalogCanvas.addEventListener("touchend", onTouchEnd);
 
     let catalogRafId;
@@ -329,7 +401,7 @@ export default function CatalogPage({
         } = plane.userData;
 
         const mouseDistance = Math.sqrt(
-          catalogTargetX * catalogTargetX + catalogTargetY * catalogTargetY,
+          catalogTargetX * catalogTargetX + catalogTargetY * catalogTargetY
         );
         const parallaxX = catalogTargetX * parallaxFactor * 3 * randomOffset.x;
         const parallaxY = catalogTargetY * parallaxFactor * 3 * randomOffset.y;
@@ -368,7 +440,10 @@ export default function CatalogPage({
     return () => {
       cancelAnimationFrame(catalogRafId);
       window.removeEventListener("mousemove", catalogOnMouseMove);
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("resize", catalogOnResize);
+
       catalogCanvas.removeEventListener("touchstart", onTouchStart);
       catalogCanvas.removeEventListener("touchmove", onTouchMove);
       catalogCanvas.removeEventListener("touchend", onTouchEnd);
@@ -380,10 +455,23 @@ export default function CatalogPage({
       });
       catalogRenderer.dispose();
     };
-  }, [sourceImages]);
+  }, [galleryImages]);
+
+  // Modal navigation handlers
+  const handlePrev = () => {
+    setSelectedIndex((prev) =>
+      prev === 0 ? galleryImages.length - 1 : prev - 1
+    );
+  };
+
+  const handleNext = () => {
+    setSelectedIndex((prev) =>
+      prev === galleryImages.length - 1 ? 0 : prev + 1
+    );
+  };
 
   return (
-    <section className="catalog">
+    <section ref={catalogSectionRef} className="catalog">
       <canvas ref={catalogCanvasRef} className="catalog-canvas" />
 
       <nav className="catalog-nav">
@@ -395,12 +483,56 @@ export default function CatalogPage({
         </Copy>
       </nav>
 
-      <div ref={catalogHeaderRef} className="catalog-header">
-        <Copy animateOnScroll={false} delay={0.65}>
-          <h1 className="subheader">CAPICCI</h1>
-          <h1>{title}</h1>
-        </Copy>
+      {/* Center Copy with high contrast and shadow styling */}
+      <div
+        ref={catalogHeaderRef}
+        className="catalog-header catalog-quote"
+      >
+        <p className="quote-line">
+          REVIVA AS <span className="highlight">NOSSAS</span>
+        </p>
+        <p className="quote-line">MEMÓRIAS</p>
       </div>
+
+      {/* Lightbox Modal & Carousel */}
+      {selectedIndex !== null && (
+        <div className="catalog-modal" onClick={() => setSelectedIndex(null)}>
+          <div
+            className="catalog-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="modal-close-btn"
+              onClick={() => setSelectedIndex(null)}
+              aria-label="Close modal"
+            >
+              ✕
+            </button>
+
+            <button
+              className="modal-nav-btn prev"
+              onClick={handlePrev}
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+
+            <img
+              src={galleryImages[selectedIndex]}
+              alt={`Gallery Image ${selectedIndex + 1}`}
+              className="modal-image"
+            />
+
+            <button
+              className="modal-nav-btn next"
+              onClick={handleNext}
+              aria-label="Next image"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

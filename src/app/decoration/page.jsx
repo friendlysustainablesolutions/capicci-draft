@@ -1,30 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
 import GalleryGrid from "@/components/GalleryGrid/GalleryGrid";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const decorationCategories = [
-  { id: "copos", key: "glasses", folder: "copos", images: [] },
-  { id: "loicas", key: "crockery", folder: "loicas", images: [] },
-  {
-    id: "mesas-e-cadeiras",
-    key: "tables",
-    folder: "mesas e cadeiras",
-    images: [],
-  },
-  { id: "mobilia", key: "furniture", folder: "mobilia", images: [] },
-  { id: "diversos", key: "miscellaneous", folder: "diversos", images: [] },
+  { id: "copos", key: "glasses", folder: "copos" },
+  { id: "loicas", key: "crockery", folder: "loicas" },
+  { id: "mesas-e-cadeiras", key: "tables", folder: "mesas e cadeiras" },
+  { id: "mobilia", key: "furniture", folder: "mobilia" },
+  { id: "diversos", key: "miscellaneous", folder: "diversos" },
+];
+
+// Intro section images mapped directly from public/images/decoration
+const introImages = [
+  { src: "/images/decoration/decoration_1.jpg", alt: "Decoration 1" },
+  { src: "/images/decoration/decoration_2.jpg", alt: "Decoration 2" },
+  { src: "/images/decoration/decoration_3.jpg", alt: "Decoration 3" },
 ];
 
 export default function DecorationPage() {
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState(decorationCategories[0].id);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const selectedCategory = decorationCategories.find(
-    (category) => category.id === activeCategory,
+    (category) => category.id === activeCategory
   );
+
+  useEffect(() => {
+    async function loadCategoryImages() {
+      setLoading(true);
+      try {
+        const folderParam = encodeURIComponent(selectedCategory.folder);
+        const res = await fetch(`/api/gallery?folder=${folderParam}`);
+        const data = await res.json();
+        setImages(data.images || []);
+      } catch (err) {
+        console.error("Failed to load images:", err);
+        setImages([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCategoryImages();
+  }, [selectedCategory.folder]);
 
   return (
     <>
@@ -45,31 +69,36 @@ export default function DecorationPage() {
             <div className="decoration-intro">
               <div className="decoration-intro-copy">
                 <Copy splitType="words">
-                  <p className="lg">
-                    {t("decorationLead")}
-                  </p>
+                  <p className="lg">{t("decorationLead")}</p>
                 </Copy>
 
                 <div className="decoration-intro-details">
                   <div>
                     <p className="mono sm">{t("uniqueAesthetic")}</p>
-                    <p className="md">
-                      {t("uniqueAestheticCopy")}
-                    </p>
+                    <p className="md">{t("uniqueAestheticCopy")}</p>
                   </div>
                   <div>
                     <p className="mono sm">{t("sustainability")}</p>
-                    <p className="md">
-                      {t("sustainabilityCopy")}
-                    </p>
+                    <p className="md">{t("sustainabilityCopy")}</p>
                   </div>
                 </div>
               </div>
 
+              {/* Real images routed from public/images/decoration */}
               <div className="decoration-intro-images" aria-label={t("decorationImages")}>
-                {[1, 2, 3].map((index) => (
+                {introImages.map((img, index) => (
                   <div className="decoration-intro-placeholder" key={index}>
-                    <span>decoration_{index}.jpg</span>
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      onError={(e) => {
+                        // Fallback to label if the image file isn't found
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextSibling.style.display = "block";
+                      }}
+                    />
+                    <span style={{ display: "none" }}>{`decoration_${index + 1}.jpg`}</span>
                   </div>
                 ))}
               </div>
@@ -97,11 +126,15 @@ export default function DecorationPage() {
 
               <div className="decoration-gallery-panel" role="tabpanel">
                 <p className="mono sm">[ {selectedCategory.folder} ]</p>
-                <GalleryGrid
-                  images={selectedCategory.images}
-                  placeholderCount={4}
-                  placeholderLabel={t(selectedCategory.key)}
-                />
+                {loading ? (
+                  <p className="mono sm">A carregar imagens...</p>
+                ) : (
+                  <GalleryGrid
+                    images={images}
+                    placeholderCount={0}
+                    placeholderLabel={t(selectedCategory.key)}
+                  />
+                )}
               </div>
             </div>
 

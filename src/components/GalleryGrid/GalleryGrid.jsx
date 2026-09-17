@@ -3,29 +3,32 @@
 import { useLanguage } from "@/providers/LanguageProvider";
 
 export default function GalleryGrid({
-  images,
+  images = [],
   placeholderCount = 0,
   placeholderLabel = "Imagem de decoração",
   emptyMessage = "Sem imagens disponíveis.",
 }) {
   const { t } = useLanguage();
+
   if (!images.length && !placeholderCount) {
-    return <p className="gallery-empty">{t("emptyGallery")}</p>;
+    return <p className="gallery-empty">{t("emptyGallery") || emptyMessage}</p>;
   }
 
   return (
     <div className="gallery-grid">
-      {images.map((image, index) => (
-        <div className="gallery-item" key={image}>
-          <img src={image} alt={`${t("catalogImageAlt")} ${index + 1}`} />
-        </div>
-      ))}
-      {!images.length &&
-        Array.from({ length: placeholderCount }, (_, index) => (
-          <div className="gallery-item gallery-placeholder" key={`placeholder-${index}`}>
-            <span>{placeholderLabel} {index + 1}</span>
+      {images.map((item, index) => {
+        const imageSrc = typeof item === "string" ? item : item.src;
+        const label = typeof item === "object" ? item.displayName : `Modelo ${index + 1}`;
+
+        return (
+          <div className="gallery-item" key={imageSrc || index}>
+            <div className="image-wrapper">
+              <img src={imageSrc} alt={label} loading="lazy" />
+            </div>
+            <span className="image-label">{label}</span>
           </div>
-        ))}
+        );
+      })}
     </div>
   );
 }
