@@ -72,11 +72,15 @@ export default function TransmitPage({
       const transmitCard3 = transmitSection.querySelector("#transmit-card-3");
 
       let transmitScrollTrigger;
-      const isMobileWeddings =
-        window.innerWidth < MOBILE_BREAKPOINT && mode === "weddings";
 
       function setup() {
         cleanup();
+
+        // Recomputed per setup() (which re-runs on resize) rather than captured
+        // once at mount -- otherwise crossing the breakpoint leaves the desktop
+        // path running on mobile, which tilts the cards via rotationZ.
+        const isMobileWeddings =
+          window.innerWidth < MOBILE_BREAKPOINT && mode === "weddings";
 
         transmitCardEls.forEach((card) =>
           gsap.set(card, { clearProps: "all" }),

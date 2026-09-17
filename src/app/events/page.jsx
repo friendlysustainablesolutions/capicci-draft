@@ -37,20 +37,44 @@ export default function EventsPage() {
     const startWidth = window.innerWidth;
     const targetWidth = isMobile
       ? window.innerWidth - 24
-      : Math.min(window.innerWidth - 24, 960);
+      : Math.min(window.innerWidth - 24, 1200);
     const startHeight = window.innerHeight;
+    // Desktop drops the banner less far down than mobile so that, once shrunk,
+    // the whole rectangle -- caption included -- still sits inside the viewport
+    // with the page title revealed above it.
+    const dropFactor = isMobile ? 0.34 : 0.2;
+    // Mobile stops at a square (height matches width). The min() is a guard for
+    // short/landscape screens, where a square wouldn't fit the viewport.
     const targetHeight = isMobile
-      ? window.innerWidth * 0.52
-      : Math.max(700, Math.min(window.innerHeight * 0.86, 820));
+      ? Math.min(targetWidth, window.innerHeight * (1 - dropFactor) - 24)
+      : Math.max(
+          520,
+          Math.min(window.innerHeight * (1 - dropFactor) - 24, 860),
+        );
     const localScroll = Math.max(0, -hero.getBoundingClientRect().top);
     const progress = Math.max(0, Math.min(1, localScroll / heroDistance));
-    const videoProgress = Math.max(0, Math.min(1, (progress - 0.3) / 0.48));
+    // Shrink completes at ~55% of the hero's scroll range. It has to finish
+    // while the video is still pinned -- the sticky wrap unpins once the hero's
+    // bottom reaches it, and anything left over would scroll the caption out of
+    // view mid-animation.
+    const videoProgress = Math.max(0, Math.min(1, (progress - 0.3) / 0.25));
     const revealProgress = Math.max(0, Math.min(1, (videoProgress - 0.08) / 0.55));
 
     video.style.width = `${startWidth + (targetWidth - startWidth) * videoProgress}px`;
     video.style.height = `${startHeight + (targetHeight - startHeight) * videoProgress}px`;
-    video.style.borderRadius = `${12 * videoProgress}px`;
-    video.style.transform = `translateY(${window.innerHeight * 0.34 * videoProgress}px)`;
+    video.style.borderRadius = `${28 * videoProgress}px`;
+    // Offset via the sticky `top` rather than a transform: transforms are
+    // applied after layout, so sticky keeps the layout box inside .events-hero
+    // while the visual box slides out through its `overflow: clip`, cutting off
+    // the caption and the bottom corners.
+    video.style.top = `${window.innerHeight * dropFactor * videoProgress}px`;
+    // Caption shrinks with the rectangle instead of staying at full-bleed size.
+    // Mirrors the clamp(2rem, 5vw, 5rem) base in the stylesheet.
+    const captionTitle = video.querySelector(".events-video-caption .v2");
+    if (captionTitle) {
+      const baseSize = Math.min(Math.max(32, window.innerWidth * 0.05), 80);
+      captionTitle.style.fontSize = `${baseSize * (1 - 0.45 * videoProgress)}px`;
+    }
     header.style.transform = `translateY(${(isMobile ? 18 : 28) * (1 - revealProgress)}px)`;
     header.style.opacity = `${revealProgress}`;
   });

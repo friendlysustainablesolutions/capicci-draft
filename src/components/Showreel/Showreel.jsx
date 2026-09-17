@@ -12,6 +12,8 @@ import "./Showreel.css";
 
 gsap.registerPlugin(ScrollTrigger, Flip);
 
+const MARQUEE_SPEED_PX_PER_SECOND = 90;
+
 export default function Showreel() {
   const { t } = useLanguage();
   const showreelRef = useRef(null);
@@ -87,6 +89,18 @@ export default function Showreel() {
         showreelVisualFlip.progress(0);
         showreelMarqueeFlip.progress(0);
 
+        // Below the desktop breakpoint there's no room to scroll-scrub this
+        // morph, and pinning it anyway reserves several viewport heights of
+        // dead scroll before the next section can appear. Skip the pin and
+        // just show the converged end state immediately.
+        const isMobileShowreel = window.innerWidth < 1000;
+
+        if (isMobileShowreel) {
+          showreelHeaderFlip.progress(1);
+          showreelVisualFlip.progress(1);
+          showreelMarqueeFlip.progress(1);
+        }
+
         if (marqueeTrack) {
           const items = marqueeTrack.querySelectorAll("p");
           const singleSetCount = items.length / 2;
@@ -99,13 +113,17 @@ export default function Showreel() {
 
           gsap.set(marqueeTrack, { x: 0 });
 
+          // Duration derived from width so the scroll keeps a constant speed
+          // regardless of how long the copy or how large the type is.
           showreelMarqueeTween = gsap.to(marqueeTrack, {
             x: -singleSetWidth,
-            duration: 12,
+            duration: singleSetWidth / MARQUEE_SPEED_PX_PER_SECOND,
             ease: "none",
             repeat: -1,
           });
         }
+
+        if (isMobileShowreel) return;
 
         showreelTrigger = ScrollTrigger.create({
           trigger: section,
@@ -150,44 +168,52 @@ export default function Showreel() {
   );
 
   return (
-    <section className="showreel" ref={showreelRef}>
-      <div className="showreel-header" id="showreel-header-1">
-        <span aria-hidden="true">EVENTOS</span>
-      </div>
+    <>
+      <section className="showreel" ref={showreelRef}>
+        <div className="showreel-header" id="showreel-header-1">
+          <span aria-hidden="true">EVENTOS</span>
+        </div>
 
-      <div className="showreel-header" id="showreel-header-2">
-        <span aria-hidden="true">EVENTOS</span>
-      </div>
+        <div className="showreel-header" id="showreel-header-2">
+          <span aria-hidden="true">EVENTOS</span>
+        </div>
 
-      <div className="showreel-header" id="showreel-header-3">
-        <span aria-hidden="true">EVENTOS</span>
-      </div>
+        <div className="showreel-header" id="showreel-header-3">
+          <span aria-hidden="true">EVENTOS</span>
+        </div>
 
-      <div className="showreel-header" id="showreel-header-4">
-        <span aria-hidden="true">EVENTOS</span>
-      </div>
+        <div className="showreel-header" id="showreel-header-4">
+          <span aria-hidden="true">EVENTOS</span>
+        </div>
 
-      <div className="container">
-        <div className="showreel-visual">
-          <img src="/images/img8.jpg" alt="" />
+        <div className="container">
+          <div className="showreel-visual">
+            <img src="/images/img8.jpg" alt="" />
 
-          <div className="showreel-marquee-container">
-            <div className="showreel-marquee">
-              <div className="showreel-marquee-track">
-                {Array.from({ length: 6 }, (_, index) => <p className="sm" key={index}>{t("spacesButton")}</p>)}
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
-                <p className="sm">O 8 MARVILA – Eventos com espaço para acontecer</p>
+            <div className="showreel-marquee-container">
+              <div className="showreel-marquee">
+                <div className="showreel-marquee-track">
+                  {/* Even count of identical items: the loop scrolls by exactly
+                      half the track, so the two halves have to match. */}
+                  {Array.from({ length: 8 }, (_, index) => (
+                    <p className="sm" key={index}>
+                      {t("marvilaMarquee")}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="showreel-space-cta">
-          <p className="mono sm">[ MARVILA / ESPAÇOS ]</p>
-          <p className="v2">Venha conhecer os nossos espaços.</p>
-          <Button href="/spaces">Ver espaços</Button>
+      <section className="showreel-cta">
+        <div className="container">
+          <p className="mono sm showreel-cta-label">{t("marvilaSpacesLabel")}</p>
+          <p className="v2 showreel-cta-title">{t("marvilaSpacesTitle")}</p>
+          <Button href="/spaces">{t("marvilaSpacesButton")}</Button>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

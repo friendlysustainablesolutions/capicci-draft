@@ -12,8 +12,10 @@ import "./home.css";
 
 export default function Home() {
   const { t } = useLanguage();
-  const heroDelay = isInitialLoad ? 7 : 0.5;
-  const footerDelay = isInitialLoad ? 7.5 : 0.75;
+  // The preloader's own timeline finishes around 5.5s, so these pick up just
+  // as it clears rather than leaving a pause on an empty hero.
+  const heroDelay = isInitialLoad ? 5.7 : 0.5;
+  const footerDelay = isInitialLoad ? 6.1 : 0.75;
 
   return (
     <>
@@ -26,9 +28,8 @@ export default function Home() {
 
         <div className="container">
           <div className="hero-header">
-            <Copy animateOnScroll={false} delay={heroDelay}>
-              <h2>CAPICCI</h2>
-              <h2 className="subheader">EVENTS & HAPPINESS</h2>
+            <Copy variant="slide" animateOnScroll={false} delay={heroDelay}>
+              <img className="hero-logo" src="/images/hero%20logo.png" alt="CAPICCI - Events & Happiness" />
             </Copy>
           </div>
 

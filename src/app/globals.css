@@ -159,8 +159,9 @@ p.mono.lg {
 }
 
 .page-header {
-  padding: 120px 0 80px;
+  padding: 120px 0 32px;
 }
+
 
 .page-header-content {
   display: flex;
@@ -170,20 +171,22 @@ p.mono.lg {
   text-align: center;
 }
 
+/* Lower floor than before so the title doesn't run under the fixed menu
+   button on narrow screens; the vw term keeps desktop unchanged. */
 .page-header-content h1 {
-  font-size: clamp(3.5rem, 7vw, 7rem);
+  font-size: clamp(2.25rem, 7vw, 7rem);
   line-height: 0.88;
 }
 
 .page-header-content .subheader {
   margin: 0;
-  font-size: clamp(1.6rem, 3.2vw, 4rem);
+  font-size: clamp(1.1rem, 3.2vw, 4rem);
   line-height: 0.95;
   transform: none;
 }
 
 .page-content {
-  padding: 80px 0 120px;
+  padding: 32px 0 48px;
 }
 
 .content-wrapper {
@@ -402,8 +405,48 @@ p.mono.lg {
   line-height: 1.6;
 }
 
+.contact-map {
+  overflow: hidden;
+  border-radius: 8px;
+  line-height: 0;
+}
+
+.contact-map iframe {
+  display: block;
+  width: 100%;
+  height: clamp(320px, 45vh, 520px);
+  border: 0;
+}
+
+.contact-card-action {
+  margin-top: 20px;
+}
+
+/* Shown but inactive until a WhatsApp number is confirmed. */
+.contact-whatsapp--pending {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* On desktop the grid resolves to three columns, leaving two empty cells
+   beside the last card -- the map spans them and matches that card's height.
+   Below that the grid is a single column and it just sits full width. */
+@media (min-width: 1201px) {
+  .contact-map {
+    position: relative;
+    grid-column: span 2;
+    min-height: 260px;
+  }
+
+  .contact-map iframe {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+}
+
 .contact-note {
-  margin: 60px 0;
+  margin: 60px 0 0;
   padding: 24px;
   background-color: var(--base-200);
   border-radius: 8px;
@@ -416,11 +459,11 @@ p.mono.lg {
   }
 
   .page-header {
-    padding: 80px 0 60px;
+    padding: 80px 0 24px;
   }
 
   .page-content {
-    padding: 60px 0 80px;
+    padding: 24px 0 40px;
   }
 
   .gallery-grid {
@@ -435,5 +478,15 @@ p.mono.lg {
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+}
+
+/* The menu button is fixed at the top left and ends around 160px down. On
+   narrow screens the centred page title is wide enough to reach under it, so
+   the header starts below it -- reducing the font size alone can't guarantee
+   this for longer titles like "Decoração e Aluguer". */
+@media (max-width: 700px) {
+  .page-header {
+    padding-top: 172px;
   }
 }

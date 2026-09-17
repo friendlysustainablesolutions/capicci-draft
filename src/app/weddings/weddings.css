@@ -1,5 +1,5 @@
 .weddings-showcase {
-  padding: 0 0 4rem;
+  padding: 0 0 2rem;
   overflow: hidden;
 }
 
@@ -27,7 +27,8 @@
   display: flex;
   align-items: end;
   justify-content: space-between;
-  color: var(--base-100);
+  color: var(--base-500);
+  text-shadow: 0 2px 6px rgba(15, 15, 15, 0.3);
 }
 
 .weddings-image-caption .v2 {
@@ -124,11 +125,18 @@
     margin-top: 0.75rem;
   }
 
-  .weddings-intro,
-  .weddings-story-grid {
+  .weddings-intro {
     grid-template-columns: 1fr;
     gap: 2rem;
     margin: 6rem 0;
+  }
+
+  /* Bottom margin matches the mosaic's own gap so the landscape image sits as
+     close to the grid below it as the grid images are to each other. */
+  .weddings-story-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 6rem 0 1rem;
   }
 
   .weddings-image-row {
@@ -154,10 +162,24 @@
   .weddings-mosaic-item:nth-child(5) {
     grid-row: span 1;
   }
+
+  .weddings-mosaic-item:last-child {
+    display: none;
+  }
+
+  /* Tighter than desktop: the same gap reads as much larger on a narrow
+     screen, leaving the button stranded below the grid. */
+  .weddings-showcase {
+    padding-bottom: 0.5rem;
+  }
+
+  .weddings-final-cta {
+    padding-top: 1.25rem;
+  }
 }
 
 .weddings-flip-section {
-  margin: 0 0 6rem;
+  margin: 0 0 1.5rem;
   padding: 0;
   background: var(--base-100);
 }
@@ -312,18 +334,30 @@ div.pin-spacer:has(> .weddings-flip-section) {
     white-space: normal;
   }
 
+  /* Each card is a third of the pinned viewport, so the copy has to fit that
+     band -- tightened type and spacing keep it inside instead of being cut off
+     by the card's overflow. */
   .weddings-flip-section .transmit-card-back {
-    padding: 2rem 1.5rem;
+    padding: 2.25rem 1.75rem;
   }
 
   .weddings-flip-section .transmit-card-info {
-    gap: 2.5rem;
+    gap: 1.25rem;
     max-width: 420px;
+  }
+
+  .weddings-flip-section .transmit-card-back .lg {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .weddings-flip-section .transmit-card-back .mono.sm {
+    font-size: 0.7rem;
   }
 }
 
 .weddings-opening-copy {
-  padding: 7rem 0 4rem;
+  padding: 2.5rem 0 4rem;
 }
 
 .weddings-opening-copy .container {
@@ -340,5 +374,5 @@ div.pin-spacer:has(> .weddings-flip-section) {
 .weddings-final-cta {
   display: flex;
   justify-content: center;
-  padding: 4rem 0 8rem;
+  padding: 2rem 0 3rem;
 }

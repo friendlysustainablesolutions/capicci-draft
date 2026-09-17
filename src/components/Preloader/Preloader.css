@@ -1,3 +1,9 @@
+/* Set by the pre-paint script in layout.js when the intro already played this
+   session: the element still renders (so hydration matches) but never shows. */
+html[data-preloader-seen] .preloader {
+  display: none;
+}
+
 .preloader {
   position: fixed;
   inset: 0;
@@ -58,9 +64,10 @@
   }
 }
 
-.capicci-piece {
-  will-change: transform;
-}
+/* No will-change here: the wordmark and tagline are 51 separate pieces that
+   all start animating at once, and promoting every one of them to its own
+   compositor layer stalls painting mid-animation (the mark visibly freezes
+   partway through the snake-in while the timeline keeps running). */
 
 .preloader-cell {
   background-color: var(--base-100, #f7f6f4);

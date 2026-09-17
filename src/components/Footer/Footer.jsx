@@ -120,8 +120,7 @@ export default function Footer() {
         <div className="footer-content">
           <div className="footer-center">
             <div className="footer-brand">
-              <h1 className="subheader">CAPICCI</h1>
-              <h1>EVENTS & HAPPINESS</h1>
+              <img className="footer-logo" src="/images/footer%20logo.png" alt="CAPICCI - Events & Happiness" />
             </div>
 
             <div className="footer-info">

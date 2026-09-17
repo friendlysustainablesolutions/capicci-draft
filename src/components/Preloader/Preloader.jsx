@@ -19,7 +19,31 @@ import "./Preloader.css";
 
 gsap.registerPlugin(useGSAP);
 
+const PRELOADER_SEEN_KEY = "capicci-preloader-seen";
+
 export let isInitialLoad = true;
+
+// Read at module scope, before React renders, so the hero delay in page.jsx
+// agrees with whether the preloader will actually play. Session-scoped: the
+// intro runs once per visit, not on every refresh or trip back to the home
+// page, but a returning visitor still sees it.
+export let hasSeenPreloader = false;
+
+if (typeof window !== "undefined") {
+  try {
+    hasSeenPreloader = Boolean(
+      window.sessionStorage.getItem(PRELOADER_SEEN_KEY),
+    );
+    if (hasSeenPreloader) {
+      isInitialLoad = false;
+    } else {
+      window.sessionStorage.setItem(PRELOADER_SEEN_KEY, "1");
+    }
+  } catch {
+    // sessionStorage unavailable (private mode, blocked storage) -- showing the
+    // intro is the harmless fallback.
+  }
+}
 
 const BLOCK_SIZE_DESKTOP = 120;
 const BLOCK_SIZE_MOBILE = 80;
@@ -30,14 +54,32 @@ const BLOCKS_OUT = 0.5;
 const BLOCK_STAGGER = 0.05;
 const GAP_BEFORE_BLOCKS = 0.2;
 
+// The hero on Home (see page.jsx's heroDelay) starts revealing at 5.7s from
+// mount and takes ~1.4s, while this preloader's own timeline completes around
+// 5.5s. If scroll unlocked the moment the preloader finished, it would be
+// possible to scroll past the hero before it has appeared, so this is the
+// extra hold added on top of that completion (first load only).
+const SCROLL_UNLOCK_EXTRA_HOLD_INITIAL = 1800;
+
 const { iconBottom: ICON_BOTTOM, offscreenY: OFFSCREEN_Y, leaderMergeY: LEADER_MERGE_Y } =
   CAPICCI_GEOMETRY;
 
 export default function Preloader() {
   const wrapperRef = useRef(null);
-  const [showPreloader, setShowPreloader] = useState(isInitialLoad);
+  // Still rendered when the intro has already played, so this first pass
+  // matches the server HTML and hydration stays clean. CSS driven by the
+  // pre-paint script in layout.js keeps it invisible, and the effect below
+  // unmounts it.
+  const [showPreloader, setShowPreloader] = useState(
+    isInitialLoad || hasSeenPreloader,
+  );
   const [loaderAnimating, setLoaderAnimating] = useState(isInitialLoad);
+  const wasInitialLoadRef = useRef(isInitialLoad);
   const lenis = useLenis();
+
+  useEffect(() => {
+    if (hasSeenPreloader) setShowPreloader(false);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -46,16 +88,25 @@ export default function Preloader() {
   }, []);
 
   useEffect(() => {
+    if (!lenis) return;
+
     if (loaderAnimating) {
-      if (lenis) lenis.stop();
-    } else {
-      if (lenis) lenis.start();
+      lenis.stop();
+      return;
     }
+
+    if (!wasInitialLoadRef.current) {
+      lenis.start();
+      return;
+    }
+
+    const timer = setTimeout(() => lenis.start(), SCROLL_UNLOCK_EXTRA_HOLD_INITIAL);
+    return () => clearTimeout(timer);
   }, [lenis, loaderAnimating]);
 
   useGSAP(
     () => {
-      if (!showPreloader) return;
+      if (!showPreloader || hasSeenPreloader) return;
 
       const root = wrapperRef.current;
       const blocksEl = root.querySelector(".preloader-blocks");
@@ -99,18 +150,9 @@ export default function Preloader() {
       gsap.set(cells, { scale: 1.05, transformOrigin: "50% 50%" });
 
       // ---- logo intro ----
-      // IMPORTANT: every animated value below is a real GSAP tween on the
-      // actual DOM elements (using GSAP's `attr` property), NOT a plain JS
-      // object tweened with a manual `onUpdate: () => el.setAttribute(...)`.
-      // That distinction matters: GSAP can only auto-revert things it
-      // directly tracks. In React Strict Mode (next dev), effects mount,
-      // clean up, and re-mount once -- useGSAP correctly kills tracked
-      // tweens on that first throwaway cleanup, but raw setAttribute calls
-      // hidden inside a callback are invisible to it and were being
-      // orphaned, leaving a detached first timeline silently finishing in
-      // the background while the real, visible mount never continued past
-      // its first couple of steps. Using `attr` tweens on the real elements
-      // means everything is properly tracked and cleaned up.
+      // Every animated value below is a real GSAP tween on the actual DOM
+      // elements (via GSAP's `attr` property), so useGSAP's automatic
+      // cleanup can track and revert it correctly.
 
       const GRID = 10;
       function primeSnake(pieces) {

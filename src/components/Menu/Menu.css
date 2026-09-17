@@ -169,11 +169,16 @@ p.mono.menu-close-word {
   font-size: 1.3rem;
   font-weight: 400;
   letter-spacing: -2%;
+  white-space: nowrap;
 }
 
+/* Flex rather than a fixed 1fr 1fr grid so the contact link sizes to its own
+   text -- in a rigid half it wrapped onto a second line, which the reveal mask
+   clips off. */
 .menu-panel-footer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 2rem;
   margin-top: auto;
   padding-top: 2.5rem;
@@ -185,8 +190,43 @@ p.mono.menu-close-word {
   gap: 0.4rem;
 }
 
+.menu-panel-socials {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.menu-social-icon {
+  display: block;
+  width: 2rem;
+  transition: opacity 300ms ease;
+}
+
+.menu-social-icon:hover {
+  opacity: 0.6;
+}
+
+.menu-social-icon img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 @media (max-width: 1000px) {
   .menu-link::after {
     display: none;
+  }
+
+  /* Stacked and centred on narrow screens, contact link above the icons.
+     Desktop keeps them side by side. */
+  .menu-panel-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .menu-panel-contact {
+    order: -1;
   }
 }

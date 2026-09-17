@@ -8,12 +8,12 @@ import { useLanguage } from "@/providers/LanguageProvider";
 import "./weddings.css";
 
 const weddingImages = [
-  { src: "/images/weddings/casamento_1.jpg", alt: "Mesa de casamento junto ao mar" },
+  { src: "/images/weddings/casamento_6.jpg", alt: "Jardim preparado para um casamento" },
   { src: "/images/weddings/casamento_2.jpeg", alt: "Cerimónia de casamento na praia" },
   { src: "/images/weddings/casamento_3.jpg", alt: "Sala preparada para um casamento" },
   { src: "/images/weddings/casamento_4.jpeg", alt: "Mesa de apoio decorada" },
   { src: "/images/weddings/casamento_5.jpeg", alt: "Sala de casamento decorada" },
-  { src: "/images/weddings/casamento_6.jpg", alt: "Jardim preparado para um casamento" },
+  { src: "/images/weddings/casamento_1.jpg", alt: "Mesa de casamento junto ao mar" },
   { src: "/images/weddings/casamento_7.jpeg", alt: "Mesa de casamento ao ar livre" },
   { src: "/images/weddings/casamento_8.jpeg", alt: "Celebração junto à piscina" },
   { src: "/images/weddings/casamento_9.jpeg", alt: "Decoração de casamento ao entardecer" },

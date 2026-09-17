@@ -30,7 +30,6 @@ export default function WeddingCTA() {
             <video autoPlay muted loop playsInline preload="metadata">
               <source src="/images/homepage.wedding.video.mp4" type="video/mp4" />
             </video>
-            <span className="wedding-cta-video-placeholder">homepage.wedding.video.mp4</span>
           </div>
         </div>
       </div>

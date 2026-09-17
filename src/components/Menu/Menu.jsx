@@ -23,13 +23,9 @@ const MENU_PRIMARY_LINKS = [
   { href: "/contacts", label: "contacts" },
 ];
 
-const MENU_FOOTER_LINKS_LEFT = [
-  { href: "#", label: "Instagram" },
-  { href: "#", label: "LinkedIn" },
-];
-
-const MENU_FOOTER_LINKS_RIGHT = [
-  { href: "mailto:geral@capicci.pt", label: "Email" },
+const MENU_SOCIAL_ICONS = [
+  { href: "#", label: "Instagram", icon: "/images/icons/instagram.png" },
+  { href: "#", label: "Facebook", icon: "/images/icons/facebook.png" },
 ];
 
 function MenuLineLink({ href, label, className = "", onClick }) {
@@ -196,28 +192,33 @@ export default function Menu() {
           </nav>
 
           <div className="menu-panel-footer">
-            <div className="menu-panel-footer-col">
-              {MENU_FOOTER_LINKS_LEFT.map((link) => (
-                <MenuLineLink
-                  key={link.label}
-                  href={link.href}
-                  label={link.label === "Email" ? t("email") : link.label}
-                  className="menu-link menu-link-footer"
-                  onClick={() => handleLinkClick(link.href)}
-                />
+            <div className="menu-panel-footer-col menu-panel-socials">
+              {MENU_SOCIAL_ICONS.map((social) => (
+                <Link
+                  key={social.label}
+                  href={social.href}
+                  className="menu-social-icon"
+                  aria-label={social.label}
+                  onClick={() => handleLinkClick(social.href)}
+                >
+                  {/* Same mask/line structure as the text links so these ride
+                      the existing staggered reveal. */}
+                  <span className="menu-line-mask">
+                    <span className="menu-line">
+                      <img src={social.icon} alt="" />
+                    </span>
+                  </span>
+                </Link>
               ))}
             </div>
 
-            <div className="menu-panel-footer-col">
-              {MENU_FOOTER_LINKS_RIGHT.map((link) => (
-                <MenuLineLink
-                  key={link.label}
-                  href={link.href}
-                  label={link.label}
-                  className="menu-link menu-link-footer"
-                  onClick={() => handleLinkClick(link.href)}
-                />
-              ))}
+            <div className="menu-panel-footer-col menu-panel-contact">
+              <MenuLineLink
+                href="/contacts"
+                label={t("contactHeading")}
+                className="menu-link menu-link-footer"
+                onClick={() => handleLinkClick("/contacts")}
+              />
             </div>
           </div>
         </aside>
