@@ -9,7 +9,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-PT">
+    // suppressHydrationWarning is scoped to this element's own attributes:
+    // the pre-paint script below and LanguageProvider both write to <html>
+    // before/after hydration, which React would otherwise report as a
+    // mismatch. Children are still checked normally.
+    <html lang="pt-PT" suppressHydrationWarning>
       <head>
         {/* Runs before first paint so a repeat visit never flashes the intro
             overlay. The server always renders the preloader (it can't read

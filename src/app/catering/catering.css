@@ -1,0 +1,122 @@
+.catering-page {
+  padding: 0 0 2rem;
+  overflow: hidden;
+}
+
+.catering-lead {
+  max-width: 900px;
+  margin: 2rem auto 7rem;
+  text-align: center;
+}
+
+.catering-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto 8rem;
+}
+
+/* Alternating rows: the media is written first in the markup for both, so the
+   reversed row pushes it to column 2 rather than reordering the DOM -- the copy
+   then falls into column 1 on its own. */
+.catering-row--reverse .catering-media {
+  order: 2;
+}
+
+.catering-row-copy {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.catering-row-copy h4 {
+  margin-top: 0.5rem;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+}
+
+.catering-row-copy > p.md {
+  line-height: 1.6;
+}
+
+/* The bitten frame ------------------------------------------------------- */
+
+/* Each corner is chewed by a cluster of two overlapping circular holes, so the
+   edge reads as an organic bite rather than a rounded corner. The layers are
+   intersected, which means a pixel survives only where every layer is opaque --
+   i.e. the holes union together. --bite is the radius, driven from the scroll
+   handler in px so the bite scales with the rendered size of the image. */
+.catering-media {
+  --bite: 0px;
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: var(--base-200);
+  -webkit-mask-image:
+    radial-gradient(circle at 0% 0%, transparent var(--bite), #000 calc(var(--bite) + 1px)),
+    radial-gradient(circle at 17% 1%, transparent calc(var(--bite) * 0.52), #000 calc(var(--bite) * 0.52 + 1px)),
+    radial-gradient(circle at 100% 0%, transparent calc(var(--bite) * 0.86), #000 calc(var(--bite) * 0.86 + 1px)),
+    radial-gradient(circle at 99% 14%, transparent calc(var(--bite) * 0.46), #000 calc(var(--bite) * 0.46 + 1px)),
+    radial-gradient(circle at 100% 100%, transparent var(--bite), #000 calc(var(--bite) + 1px)),
+    radial-gradient(circle at 83% 99%, transparent calc(var(--bite) * 0.5), #000 calc(var(--bite) * 0.5 + 1px)),
+    radial-gradient(circle at 0% 100%, transparent calc(var(--bite) * 0.82), #000 calc(var(--bite) * 0.82 + 1px)),
+    radial-gradient(circle at 1% 86%, transparent calc(var(--bite) * 0.44), #000 calc(var(--bite) * 0.44 + 1px));
+  mask-image:
+    radial-gradient(circle at 0% 0%, transparent var(--bite), #000 calc(var(--bite) + 1px)),
+    radial-gradient(circle at 17% 1%, transparent calc(var(--bite) * 0.52), #000 calc(var(--bite) * 0.52 + 1px)),
+    radial-gradient(circle at 100% 0%, transparent calc(var(--bite) * 0.86), #000 calc(var(--bite) * 0.86 + 1px)),
+    radial-gradient(circle at 99% 14%, transparent calc(var(--bite) * 0.46), #000 calc(var(--bite) * 0.46 + 1px)),
+    radial-gradient(circle at 100% 100%, transparent var(--bite), #000 calc(var(--bite) + 1px)),
+    radial-gradient(circle at 83% 99%, transparent calc(var(--bite) * 0.5), #000 calc(var(--bite) * 0.5 + 1px)),
+    radial-gradient(circle at 0% 100%, transparent calc(var(--bite) * 0.82), #000 calc(var(--bite) * 0.82 + 1px)),
+    radial-gradient(circle at 1% 86%, transparent calc(var(--bite) * 0.44), #000 calc(var(--bite) * 0.44 + 1px));
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* Oversized so the parallax shift never exposes an empty edge. */
+.catering-media img {
+  position: absolute;
+  top: -7%;
+  left: 0;
+  width: 100%;
+  height: 114%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.catering-media--wide {
+  aspect-ratio: 16 / 10;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.catering-page .cta-section {
+  margin: 5rem 0 2rem;
+}
+
+@media (max-width: 900px) {
+  .catering-lead {
+    margin: 1rem auto 4.5rem;
+  }
+
+  .catering-row {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 0 auto 4.5rem;
+  }
+
+  /* Single column: the media always leads, reversed or not. */
+  .catering-row--reverse .catering-media {
+    order: 0;
+  }
+
+  .catering-media--wide {
+    aspect-ratio: 4 / 5;
+  }
+
+  .catering-page .cta-section {
+    margin: 3.5rem 0 1rem;
+  }
+}
