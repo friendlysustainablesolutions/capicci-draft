@@ -83,13 +83,8 @@
   line-height: 1.35;
 }
 
-.footer-whatsapp {
+.footer-call {
   margin-top: 0.75rem;
-}
-
-.footer-whatsapp--pending {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .footer-brand {

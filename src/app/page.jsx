@@ -4,6 +4,7 @@ import Preloader, { isInitialLoad } from "@/components/Preloader/Preloader";
 import Showreel from "@/components/Showreel/Showreel";
 import About from "@/components/About/About";
 import FeaturedCards from "@/components/FeaturedCards/FeaturedCards";
+import Clients from "@/components/Clients/Clients";
 import WeddingCTA from "@/components/WeddingCTA/WeddingCTA";
 import Copy from "@/components/Copy/Copy";
 import { useLanguage } from "@/providers/LanguageProvider";
@@ -38,7 +39,7 @@ export default function Home() {
               <p className="mono sm">{t("homeTagline")}</p>
             </Copy>
             <Copy variant="flicker" delay={footerDelay} animateOnScroll={false}>
-              <p className="mono sm">[ Since 1999 ]</p>
+              <p className="mono sm">{t("homeSince")}</p>
             </Copy>
           </div>
         </div>
@@ -49,6 +50,8 @@ export default function Home() {
       <Showreel />
 
       <FeaturedCards />
+
+      <Clients />
 
       <WeddingCTA />
     </>

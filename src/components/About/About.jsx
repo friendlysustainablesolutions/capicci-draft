@@ -9,32 +9,13 @@ import "./About.css";
 
 const serviceImages = [
   {
-    src: "/images/services/services_catering.jpg",
+    src: "/images/catering-full/jamon-carving.jpg",
     compassRotation: 0,
   },
   {
-    src: "/images/services/services_decoration.jpg",
-    compassRotation: 120,
+    src: "/images/quinta-do-campo/table-poolhouse.jpg",
+    compassRotation: 180,
   },
-  {
-    src: "/images/services/services_graphic_design.jpg",
-    compassRotation: 240,
-  }
-];
-
-const serviceDataBlocks = [
-  [
-    { label: "Catering", value: "Gastronomia versátil", position: "top-left" },
-    { label: "Ementas", value: "Tradicionais e alternativas", position: "bottom-right" },
-  ],
-  [
-    { label: "Decoração", value: "Ambientes únicos", position: "top-right" },
-    { label: "Aluguer", value: "Loiças, mobiliário e equipamento", position: "bottom-left" },
-  ],
-  [
-    { label: "Design Gráfico", value: "Uma identidade com essência", position: "top-left" },
-    { label: "Propostas", value: "Convites e brochuras", position: "bottom-right" },
-  ],
 ];
 
 export default function About({ showIntro = true }) {
@@ -47,10 +28,6 @@ export default function About({ showIntro = true }) {
     [
       { label: t("decorationLabel"), value: t("decorationValue"), position: "top-right" },
       { label: t("hire"), value: t("hireValue"), position: "bottom-left" },
-    ],
-    [
-      { label: t("design"), value: t("designValue"), position: "top-left" },
-      { label: t("proposals"), value: t("proposalsValue"), position: "bottom-right" },
     ],
   ];
 

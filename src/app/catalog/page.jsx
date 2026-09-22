@@ -24,7 +24,14 @@ const catalogParams = {
   rows: 7,
   columns: 7,
   curvature: 5,
-  spacing: 8.2,
+  // Column/row pitch used to be a single `spacing` (8.2) shared by both axes.
+  // That matched imageWidth exactly (no horizontal gap) but towered over
+  // imageHeight (5.3), leaving a ~2.9-unit dead band of empty canvas between
+  // every row -- the "too many gaps" the wall was built with. Each axis now
+  // gets its own pitch, just wide enough past its image dimension for a thin
+  // seam between tiles.
+  columnSpacing: 8.35,
+  rowSpacing: 5.45,
   imageWidth: 8.2,
   imageHeight: 5.3,
   depth: 7.5,
@@ -34,14 +41,17 @@ const catalogParams = {
 };
 
 const MOBILE_BREAKPOINT = 1000;
-const DRAG_SENSITIVITY = 2.5;
+// Degrees of phone tilt mapped to the full -1..1 parallax range used by the
+// desktop mouse-move path -- small enough to react to a natural wrist tilt,
+// large enough that jitter while holding the phone still doesn't register.
+const TILT_RANGE_DEGREES = 20;
 
 function calculateRotations(x, y) {
   const a = 1 / (catalogParams.depth * catalogParams.curvature);
   const slopeY = -2 * a * x;
   const rotationY = Math.atan(slopeY);
 
-  const maxYDistance = (catalogParams.rows * catalogParams.spacing) / 2;
+  const maxYDistance = (catalogParams.rows * catalogParams.rowSpacing) / 2;
   const normalizedY = y / maxYDistance;
   const rotationX = normalizedY * catalogParams.verticalCurvature;
 
@@ -49,11 +59,11 @@ function calculateRotations(x, y) {
 }
 
 function calculatePosition(row, col) {
-  let x = (col - catalogParams.columns / 2) * catalogParams.spacing;
-  let y = (row - catalogParams.rows / 2) * catalogParams.spacing;
+  let x = (col - catalogParams.columns / 2) * catalogParams.columnSpacing;
+  let y = (row - catalogParams.rows / 2) * catalogParams.rowSpacing;
   let z = (x * x) / (catalogParams.depth * catalogParams.curvature);
 
-  const normalizedY = y / ((catalogParams.rows * catalogParams.spacing) / 2);
+  const normalizedY = y / ((catalogParams.rows * catalogParams.rowSpacing) / 2);
   z +=
     Math.abs(normalizedY) * normalizedY * catalogParams.verticalCurvature * 5;
 
@@ -169,6 +179,11 @@ const catalogHeaderRef = useRef(null);
 
   const [galleryImages, setGalleryImages] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  // iOS gates deviceorientation behind a tap; this prompt only ever appears
+  // there. The function it calls lives inside the Three.js effect below, so
+  // it's handed over through a ref rather than being redeclared here.
+  const [showTiltPrompt, setShowTiltPrompt] = useState(false);
+  const enableTiltRef = useRef(null);
 
   // Fetch images from /public/images/galeria
   useEffect(() => {
@@ -263,13 +278,14 @@ const catalogHeaderRef = useRef(null);
     let catalogHeaderRotY = 0;
     let catalogHeaderTransZ = 0;
 
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let dragBaseX = 0;
-    let dragBaseY = 0;
     let clickStartX = 0;
     let clickStartY = 0;
+    // First reading becomes the neutral pose so the effect responds to tilt
+    // *from however the phone is being held*, not to its absolute angle in
+    // space (lying flat vs. held upright would otherwise read completely
+    // differently).
+    let orientationBaseBeta = null;
+    let orientationBaseGamma = null;
 
     function isMobile() {
       return window.innerWidth < MOBILE_BREAKPOINT;
@@ -319,33 +335,23 @@ const catalogHeaderRef = useRef(null);
       }
     }
 
-    function onTouchStart(e) {
-      if (!isMobile()) return;
-      const touch = e.touches[0];
-      isDragging = true;
-      dragStartX = touch.clientX;
-      dragStartY = touch.clientY;
-      dragBaseX = catalogMouseX;
-      dragBaseY = catalogMouseY;
-    }
+    // Drives the same parallax the desktop mouse-move path does, but from the
+    // phone's tilt instead of a drag -- which also means touch gestures are
+    // never captured here, so the page scrolls normally over this section on
+    // mobile (the previous drag-to-rotate implementation called
+    // preventDefault on every touchmove, which trapped the scroll entirely).
+    function catalogOnDeviceOrientation(e) {
+      if (e.beta === null || e.gamma === null) return;
 
-    function onTouchMove(e) {
-      if (!isMobile() || !isDragging) return;
-      e.preventDefault();
+      if (orientationBaseBeta === null) {
+        orientationBaseBeta = e.beta;
+        orientationBaseGamma = e.gamma;
+        return;
+      }
 
-      const bounds = getContainerBounds();
-      const touch = e.touches[0];
-      const dx = (touch.clientX - dragStartX) / (bounds.width / 2);
-      const dy = (touch.clientY - dragStartY) / (bounds.height / 2);
-
-      updateFromNormalized(
-        dragBaseX + dx * DRAG_SENSITIVITY,
-        dragBaseY + dy * DRAG_SENSITIVITY
-      );
-    }
-
-    function onTouchEnd() {
-      isDragging = false;
+      const nx = (e.gamma - orientationBaseGamma) / TILT_RANGE_DEGREES;
+      const ny = (e.beta - orientationBaseBeta) / TILT_RANGE_DEGREES;
+      updateFromNormalized(nx, ny);
     }
 
     function catalogOnResize() {
@@ -360,9 +366,39 @@ const catalogHeaderRef = useRef(null);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("resize", catalogOnResize);
 
-    catalogCanvas.addEventListener("touchstart", onTouchStart, { passive: true });
-    catalogCanvas.addEventListener("touchmove", onTouchMove, { passive: false });
-    catalogCanvas.addEventListener("touchend", onTouchEnd);
+    function enableTiltParallax() {
+      orientationBaseBeta = null;
+      orientationBaseGamma = null;
+      window.addEventListener("deviceorientation", catalogOnDeviceOrientation);
+    }
+
+    // iOS 13+ only grants motion access from inside a user-gesture handler,
+    // so there the wall waits for a tap on the on-screen prompt before ever
+    // subscribing. Other mobile browsers dispatch deviceorientation with no
+    // permission step, so it's enabled immediately there.
+    function requestTiltPermission() {
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission()
+          .then((state) => {
+            if (state === "granted") enableTiltParallax();
+          })
+          .catch(() => {})
+          .finally(() => setShowTiltPrompt(false));
+      } else {
+        enableTiltParallax();
+        setShowTiltPrompt(false);
+      }
+    }
+
+    enableTiltRef.current = requestTiltPermission;
+
+    if (isMobile() && typeof window.DeviceOrientationEvent !== "undefined") {
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        setShowTiltPrompt(true);
+      } else {
+        enableTiltParallax();
+      }
+    }
 
     let catalogRafId;
 
@@ -443,10 +479,8 @@ const catalogHeaderRef = useRef(null);
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("resize", catalogOnResize);
-
-      catalogCanvas.removeEventListener("touchstart", onTouchStart);
-      catalogCanvas.removeEventListener("touchmove", onTouchMove);
-      catalogCanvas.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("deviceorientation", catalogOnDeviceOrientation);
+      enableTiltRef.current = null;
 
       catalogPlanes.forEach((plane) => {
         plane.geometry.dispose();
@@ -493,6 +527,16 @@ const catalogHeaderRef = useRef(null);
         </p>
         <p className="quote-line">MEMÓRIAS</p>
       </div>
+
+      {showTiltPrompt && (
+        <button
+          type="button"
+          className="catalog-tilt-prompt"
+          onClick={() => enableTiltRef.current?.()}
+        >
+          <p className="mono sm">{t("catalogTiltHint")}</p>
+        </button>
+      )}
 
       {/* Lightbox Modal & Carousel */}
       {selectedIndex !== null && (

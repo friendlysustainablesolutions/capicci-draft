@@ -1,0 +1,93 @@
+.clients {
+  padding: 6rem 0 7rem;
+}
+
+.clients-slogan {
+  max-width: 1000px;
+  margin: 0 auto 5rem;
+  text-align: center;
+}
+
+.clients-slogan h2 {
+  font-size: clamp(2.25rem, 6vw, 6rem);
+  line-height: 1.05;
+}
+
+.clients-label {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--base-500);
+  opacity: 0.6;
+}
+
+.clients-grid {
+  display: grid;
+  /* auto-fit collapses the spare track, so the five logos settle into a single
+     even row on desktop and reflow to two columns on narrow screens. */
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+/* The logos arrive with clashing lock-ups -- transparent, white-boxed, and one
+   on a solid red block, in ratios from 0.8 to 4.8. A white tile plus contain
+   normalises the frame; the greyscale settles the colour clash until hover. */
+.clients-item {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border: 1px solid var(--base-200);
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+/* Absolute rather than a centred grid child: as an in-flow child the logo's
+   intrinsic height wins over the tile's aspect-ratio, and the tiles come out
+   at five different heights. Taking it out of flow keeps every tile identical
+   and lets object-fit do the scaling. The padding is on the image so contain
+   insets the logo instead of bleeding to the tile edge. */
+.clients-item img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1.75rem;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.72;
+  transition: filter 0.35s ease, opacity 0.35s ease;
+}
+
+.clients-item:hover img {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  .clients {
+    padding: 4rem 0 4.5rem;
+  }
+
+  .clients-slogan {
+    margin-bottom: 3rem;
+  }
+
+  .clients-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .clients-item img {
+    padding: 1.1rem;
+  }
+}
+
+@media (hover: none) {
+  /* No hover to restore colour on touch, so show the logos as they are. */
+  .clients-item img {
+    filter: none;
+    opacity: 1;
+  }
+}

@@ -4,8 +4,27 @@
     {
       "name": "capicci-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "themedev3-shopify",
+      "runtimeExecutable": "shopify",
+      "runtimeArgs": [
+        "theme",
+        "dev",
+        "--path",
+        "C:\\Users\\Ricardo\\Downloads\\Website Projects\\ThemeDev3.0",
+        "--store",
+        "friendlysustainablesolutions.myshopify.com",
+        "--port",
+        "9292"
+      ],
+      "port": 9292
     }
   ]
 }

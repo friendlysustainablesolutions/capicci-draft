@@ -102,7 +102,7 @@ export default function TransmitPage({
         transmitScrollTrigger = ScrollTrigger.create({
           trigger: transmitSection,
           start: "top top",
-          end: `+=${window.innerHeight * 4}`,
+          end: `+=${window.innerHeight * 3}`,
           scrub: 1,
           pin: true,
           pinSpacing: true,

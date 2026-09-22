@@ -13,16 +13,8 @@ const spaces = [
   },
   {
     subtitle: "A Quinta",
-    title: "Aba da Serra",
-    image: "/images/quinta-aba-da-serra.jpg",
-    tags: ["Alenquer", { key: "rustic" }, { key: "guests150" }],
-    location: "Sopé da Serra do Montejunto, Alenquer",
-    yearKey: "equippedSpace",
-  },
-  {
-    subtitle: "A Quinta",
     title: "do Campo",
-    image: "/images/casamento_quinta_do_campo.jpg",
+    image: "/images/quinta-do-campo/hero-golden-hour.jpg",
     tags: ["Coimbra", { key: "centennial" }, { key: "guests300" }],
     location: "Coimbra",
     yearKey: "greenSpaces",

@@ -4,19 +4,15 @@ import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-// Digits only, international format, no "+". Empty string disables the button
-// (same convention as the footer's WhatsApp button) -- no number confirmed yet.
-const WHATSAPP_NUMBER = "";
-const WHATSAPP_MESSAGE = "Olá! Gostaria de saber mais sobre os serviços da CAPICCI.";
+// Digits only, international format, no "+", "00" or spaces -- the format
+// tel: hrefs expect.
+const PHONE_NUMBER = "351919402836";
 
 const MAPS_EMBED_SRC =
   "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6223.867279647234!2d-9.102092!3d38.742285!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd19338c8ea3ba2b%3A0xf172cab9dad6d35d!2s8%20Marvila!5e0!3m2!1spt-PT!2spt!4v1789647558726!5m2!1spt-PT!2spt";
 
 export default function ContactsPage() {
   const { t } = useLanguage();
-  const whatsappHref = WHATSAPP_NUMBER
-    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
-    : "#";
   return (
     <>
       <section className="page-header">
@@ -59,13 +55,9 @@ export default function ContactsPage() {
                 </p>
                 <p className="xs">{t("mobileCost")}</p>
                 <Button
-                  href={whatsappHref}
-                  label={t("footerWhatsapp")}
-                  className={`contact-card-action${WHATSAPP_NUMBER ? "" : " contact-whatsapp--pending"}`}
-                  aria-disabled={!WHATSAPP_NUMBER}
-                  onClick={(event) => {
-                    if (!WHATSAPP_NUMBER) event.preventDefault();
-                  }}
+                  href={`tel:+${PHONE_NUMBER}`}
+                  label={t("callUs")}
+                  className="contact-card-action"
                 />
               </div>
 

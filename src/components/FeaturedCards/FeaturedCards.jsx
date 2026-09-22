@@ -19,14 +19,9 @@ const DEFAULT_FEATURED_CARDS_DATA = [
     image: "/images/8-marvila.jpg",
   },
   {
-    subtitle: "Alenquer",
-    title: "Quinta Aba da Serra",
-    image: "/images/quinta-aba-da-serra.jpg",
-  },
-  {
     subtitle: "Coimbra",
     title: "Quinta do Campo",
-    image: "/images/casamento_quinta_do_campo.jpg",
+    image: "/images/quinta-do-campo/hero-golden-hour.jpg",
   },
 ];
 

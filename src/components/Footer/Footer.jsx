@@ -32,8 +32,9 @@ const FOOTER_NAV_RIGHT = [
 ];
 
 const FOOTER_SOCIALS = ["Instagram", "LinkedIn"];
-const WHATSAPP_NUMBER = "";
-const WHATSAPP_MESSAGE = "I would like to know more about CAPICCI services.";
+// Digits only, international format, no "+", "00" or spaces -- the format
+// tel: hrefs expect.
+const PHONE_NUMBER = "351919402836";
 
 export default function Footer() {
   const footerRef = useRef(null);
@@ -127,15 +128,8 @@ export default function Footer() {
               <p className="sm">Rua Carlos Anjos, Centro Empresarial Rambola, Armazém R/C A, nº 1387-A, Amoreira, 2645-178 Alcabideche</p>
               <p className="sm">+351 919 402 836* | +351 967 144 450* | geral@capicci.pt</p>
               <p className="xs">{t("footerMobile")}</p>
-              <Button
-                href={WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}` : "#"}
-                className={`footer-whatsapp${WHATSAPP_NUMBER ? "" : " footer-whatsapp--pending"}`}
-                aria-disabled={!WHATSAPP_NUMBER}
-                onClick={(event) => {
-                  if (!WHATSAPP_NUMBER) event.preventDefault();
-                }}
-              >
-                {t("footerWhatsapp")}
+              <Button href={`tel:+${PHONE_NUMBER}`} className="footer-call">
+                {t("callUs")}
               </Button>
             </div>
           </div>
@@ -161,7 +155,7 @@ export default function Footer() {
           <div className="footer-contact">
             <div className="footer-socials">
               {FOOTER_SOCIALS.map((name) => (
-                <Link href="/" key={name} className="footer-social-link">
+                <Link href="#" key={name} className="footer-social-link">
                   <p className="mono sm">{name}</p>
                 </Link>
               ))}

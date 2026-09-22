@@ -422,12 +422,6 @@ p.mono.lg {
   margin-top: 20px;
 }
 
-/* Shown but inactive until a WhatsApp number is confirmed. */
-.contact-whatsapp--pending {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* On desktop the grid resolves to three columns, leaving two empty cells
    beside the last card -- the map spans them and matches that card's height.
    Below that the grid is a single column and it just sits full width. */

@@ -91,7 +91,7 @@ export default function CateringPage() {
 
           <div className="catering-row">
             <div className="catering-media">
-              <img src="/images/catering/1.webp" alt={t("imageAlt")} />
+              <img src="/images/catering-full/vegetable-quinoa.jpg" alt={t("imageAlt")} />
             </div>
             <div className="catering-row-copy">
               <Copy splitType="words">
@@ -104,7 +104,7 @@ export default function CateringPage() {
 
           <div className="catering-row catering-row--reverse">
             <div className="catering-media">
-              <img src="/images/catering/2.webp" alt={t("imageAlt")} />
+              <img src="/images/catering-full/dessert-table-outdoor.jpg" alt={t("imageAlt")} />
             </div>
             <div className="catering-row-copy">
               <Copy splitType="words">
@@ -116,7 +116,7 @@ export default function CateringPage() {
           </div>
 
           <div className="catering-media catering-media--wide">
-            <img src="/images/catering/5.webp" alt={t("imageAlt")} />
+            <img src="/images/catering-full/buffet-service.jpg" alt={t("imageAlt")} />
           </div>
 
           <div className="cta-section">
