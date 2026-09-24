@@ -155,6 +155,54 @@ export default function ChroniclesPage({
     lenisRef.current = lenis;
   }, [lenis]);
 
+  // { slideIndex, imageIndex } for the lightbox, or null when closed. Each
+  // slide's own gallery is its hero image plus item.images, so imageIndex 0
+  // is always the hero shot even for a slide with no extra photos.
+  const [lightbox, setLightbox] = useState(null);
+  const lightboxOpenRef = useRef(false);
+
+  useEffect(() => {
+    lightboxOpenRef.current = lightbox !== null;
+  }, [lightbox]);
+
+  const closeLightbox = () => {
+    setLightbox(null);
+    lenisRef.current?.start();
+  };
+
+  const openLightbox = (slideIndex, imageIndex) => {
+    setLightbox({ slideIndex, imageIndex });
+    lenisRef.current?.stop();
+  };
+
+  const stepLightbox = (delta) => {
+    setLightbox((current) => {
+      if (!current) return current;
+      const gallery = [
+        items[current.slideIndex].image,
+        ...(items[current.slideIndex].images || []),
+      ];
+      return {
+        ...current,
+        imageIndex: (current.imageIndex + delta + gallery.length) % gallery.length,
+      };
+    });
+  };
+
+  useEffect(() => {
+    if (!lightbox) return;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") stepLightbox(-1);
+      if (event.key === "ArrowRight") stepLightbox(1);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightbox]);
+
   useEffect(() => {
     const chroniclesSlidesEl = chroniclesSlidesRef.current;
     if (!chroniclesSlidesEl) return;
@@ -311,7 +359,9 @@ export default function ChroniclesPage({
       });
 
       function chroniclesNavigate(direction) {
-        if (chroniclesAnimatingRef.current) return;
+        // A swipe/scroll over the lightbox (browsing a space's photos)
+        // shouldn't also flip the card behind it.
+        if (chroniclesAnimatingRef.current || lightboxOpenRef.current) return;
         chroniclesAnimatingRef.current = true;
         lenisRef.current?.stop();
 
@@ -487,11 +537,17 @@ export default function ChroniclesPage({
                   )}
                   {item.images?.length > 0 && (
                     <div className="chronicles-slide-thumbs">
-                      {item.images.map((src) => (
-                        <div
+                      {item.images.map((src, thumbIndex) => (
+                        <button
+                          type="button"
                           className="chronicles-slide-thumb"
                           key={src}
                           style={{ backgroundImage: `url(${src})` }}
+                          // Index 0 in the slide's own gallery is always the
+                          // hero image, so a thumbnail's spot in item.images
+                          // is one past its own index there.
+                          onClick={() => openLightbox(i, thumbIndex + 1)}
+                          aria-label={`${item.title} ${thumbIndex + 2}`}
                         />
                       ))}
                     </div>
@@ -517,6 +573,70 @@ export default function ChroniclesPage({
         <div className="chronicles-deco"></div>
         <div className="chronicles-deco"></div>
       </div>
+
+      {lightbox && (() => {
+        const slide = items[lightbox.slideIndex];
+        const gallery = [slide.image, ...(slide.images || [])];
+        const src = gallery[lightbox.imageIndex];
+
+        return (
+          <div
+            className="chronicles-lightbox"
+            onClick={closeLightbox}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className="chronicles-lightbox-content"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                className="chronicles-lightbox-close"
+                onClick={closeLightbox}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+
+              {gallery.length > 1 && (
+                <button
+                  type="button"
+                  className="chronicles-lightbox-nav prev"
+                  onClick={() => stepLightbox(-1)}
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+              )}
+
+              <figure className="chronicles-lightbox-figure">
+                <img
+                  src={src}
+                  alt={`${slide.title} ${lightbox.imageIndex + 1}`}
+                  className="chronicles-lightbox-image"
+                />
+                {gallery.length > 1 && (
+                  <figcaption className="chronicles-lightbox-caption">
+                    {lightbox.imageIndex + 1} / {gallery.length}
+                  </figcaption>
+                )}
+              </figure>
+
+              {gallery.length > 1 && (
+                <button
+                  type="button"
+                  className="chronicles-lightbox-nav next"
+                  onClick={() => stepLightbox(1)}
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

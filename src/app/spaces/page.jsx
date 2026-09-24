@@ -23,6 +23,8 @@ const spaces = [
       "/images/quinta-do-campo/long-table-avenue.jpg",
       "/images/quinta-do-campo/table-under-tree.jpg",
       "/images/quinta-do-campo/garden-ceremony-chairs.jpg",
+      "/images/quinta-do-campo/ivy-window.jpg",
+      "/images/quinta-do-campo/poolside.jpg",
     ],
     descriptionKey: "spaceQuintaCampoDescription",
     tags: ["Coimbra", { key: "centennial" }, { key: "guests300" }],

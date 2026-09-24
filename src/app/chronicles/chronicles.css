@@ -86,6 +86,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* Both children are h1s with line-height:1 and no margin (reset globally),
+     so with no gap they sit flush against each other -- the subheader's
+     baseline crowds straight into the title's cap-height, same illegible
+     stacking .page-header-content's own gap (0.35rem) was added to fix. */
+  gap: 0.75rem;
   text-align: center;
   color: var(--base-300);
   perspective: 700px;
@@ -154,16 +159,136 @@
 
 .chronicles-slide-thumbs {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.6rem;
 }
 
 .chronicles-slide-thumb {
   width: 5rem;
   aspect-ratio: 4 / 5;
+  padding: 0;
+  background-color: transparent;
   background-size: cover;
   background-position: 50% 50%;
   border: 1px solid var(--base-300);
   border-radius: 0.3rem;
+  cursor: pointer;
+  /* pointer-events on the slide are only enabled once it's ".current" (see
+     .chronicles-slide-current), so this stays inert on the other slides. */
+  transition: transform 0.2s ease;
+}
+
+.chronicles-slide-thumb:hover,
+.chronicles-slide-thumb:focus-visible {
+  transform: scale(1.05);
+}
+
+/* Full-screen photo browser for a slide's own gallery (hero image + the
+   thumbnails above) -- same treatment as the decoration page's GalleryGrid
+   lightbox, duplicated rather than shared since the two components don't
+   otherwise depend on each other. */
+.chronicles-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.chronicles-lightbox-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 85vh;
+}
+
+.chronicles-lightbox-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.chronicles-lightbox-image {
+  max-width: 85vw;
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.chronicles-lightbox-caption {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: "DMMono", monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.chronicles-lightbox-close {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 300ms ease;
+}
+
+.chronicles-lightbox-close:hover {
+  opacity: 0.7;
+}
+
+.chronicles-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  width: 50px;
+  height: 50px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 2.5rem;
+  line-height: 0;
+  cursor: pointer;
+  transition: background-color 300ms ease;
+}
+
+.chronicles-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.chronicles-lightbox-nav.prev {
+  left: -65px;
+}
+
+.chronicles-lightbox-nav.next {
+  right: -65px;
+}
+
+@media (max-width: 700px) {
+  .chronicles-lightbox-nav.prev {
+    left: 4px;
+  }
+
+  .chronicles-lightbox-nav.next {
+    right: 4px;
+  }
+
+  .chronicles-lightbox-image {
+    max-width: 92vw;
+  }
 }
 
 .chronicles-slide-counter {
