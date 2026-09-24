@@ -12,7 +12,7 @@ import "./Showreel.css";
 
 gsap.registerPlugin(ScrollTrigger, Flip);
 
-const MARQUEE_SPEED_PX_PER_SECOND = 90;
+const MARQUEE_SPEED_PX_PER_SECOND = 55;
 
 export default function Showreel() {
   const { t } = useLanguage();

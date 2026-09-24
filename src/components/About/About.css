@@ -22,6 +22,19 @@
   max-width: 900px;
 }
 
+/* Was a single-sentence h5.v2 headline; now four paragraphs of real body
+   copy, so it needs paragraph rhythm (gap, line-height) instead of display
+   type sizing. */
+.about-title-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.about-title-paragraphs p {
+  line-height: 1.6;
+}
+
 .about-services {
   display: flex;
   gap: 3rem;

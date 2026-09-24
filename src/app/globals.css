@@ -171,6 +171,19 @@ p.mono.lg {
   text-align: center;
 }
 
+/* Every page-header passes its subheader + h1 as two children of a single
+   <Copy>, which wraps multi-child content in its own unstyled div
+   (data-copy-wrapper) -- that div, not the two h1s, is the actual direct
+   child of .page-header-content above, so the gap there never separated
+   them. The subheader (italic/cursive) was rendering flush against the h1's
+   cap-height below it, reading as overlapping, illegible text. */
+.page-header-content [data-copy-wrapper] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 /* Lower floor than before so the title doesn't run under the fixed menu
    button on narrow screens; the vw term keeps desktop unchanged. */
 .page-header-content h1 {

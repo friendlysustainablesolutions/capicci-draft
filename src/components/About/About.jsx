@@ -42,9 +42,13 @@ export default function About({ showIntro = true }) {
             </Copy>
 
             <Copy splitType="words">
-              <h5 className="v2 about-title">
-                {t("aboutIntro")}
-              </h5>
+              <div className="about-title about-title-paragraphs">
+                {t("aboutIntro").split("\n\n").map((paragraph, index) => (
+                  <p className="lg" key={index}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
             </Copy>
             </div>
           )}

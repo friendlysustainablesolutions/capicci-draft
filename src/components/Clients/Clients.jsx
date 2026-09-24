@@ -96,9 +96,6 @@ export default function Clients({ logos = CLIENT_LOGOS }) {
     { scope: clientsRef, dependencies: [logos] },
   );
 
-  const pauseCarousel = () => tweenRef.current?.pause();
-  const resumeCarousel = () => tweenRef.current?.resume();
-
   return (
     <section className="clients" ref={clientsRef}>
       <div className="container">
@@ -112,11 +109,8 @@ export default function Clients({ logos = CLIENT_LOGOS }) {
           <p className="mono clients-label">{t("clientsLabel")}</p>
         </Copy>
 
-        <div
-          className="clients-carousel"
-          onMouseEnter={pauseCarousel}
-          onMouseLeave={resumeCarousel}
-        >
+        {/* Keeps crawling on hover -- deliberately no pause/resume here. */}
+        <div className="clients-carousel">
           <div className="clients-track" ref={trackRef}>
             {[...logos, ...logos].map((logo, i) => (
               <div className="clients-item" key={`${logo.src}-${i}`}>
