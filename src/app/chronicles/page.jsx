@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import { SplitText } from "gsap/SplitText";
+import { useLenis } from "lenis/react";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./chronicles.css";
@@ -138,6 +139,21 @@ export default function ChroniclesPage({
   const chroniclesTimelineRef = useRef(null);
   const chroniclesSplitsRef = useRef([]);
   const chroniclesActiveFlickerSplits = useRef([]);
+  // The slide transition is driven by the Observer below, not by real page
+  // scroll -- but Lenis keeps scrolling the actual document in lockstep with
+  // the same wheel/touch gesture regardless, since nothing tells it a
+  // transition is in progress. A strong swipe could move scrollY past this
+  // section (revealing the footer, which sits right after it) while a card
+  // was still mid-flip. Kept in a ref (rather than added to this effect's
+  // dependency array) because the mobile/desktop breakpoint switch recreates
+  // the Lenis instance, and that shouldn't tear down and rebuild the whole
+  // slide setup below.
+  const lenis = useLenis();
+  const lenisRef = useRef(null);
+
+  useEffect(() => {
+    lenisRef.current = lenis;
+  }, [lenis]);
 
   useEffect(() => {
     const chroniclesSlidesEl = chroniclesSlidesRef.current;
@@ -174,7 +190,14 @@ export default function ChroniclesPage({
       const year = slide.querySelector(".chronicles-slide-year");
       const location = slide.querySelector(".chronicles-slide-footer > .mono");
       const counter = slide.querySelector(".chronicles-slide-counter");
-      const tags = [...slide.querySelectorAll(".chronicles-slide-tag")];
+      // Reuses the tags' fade/slide-up treatment for the description and
+      // thumbnail strip too, so a slide added later that has neither still
+      // animates in fine -- the selector just matches nothing extra.
+      const tags = [
+        ...slide.querySelectorAll(
+          ".chronicles-slide-tag, .chronicles-slide-description, .chronicles-slide-thumb",
+        ),
+      ];
 
       return {
         flickerTargets: [year, location, counter].filter(Boolean),
@@ -265,6 +288,8 @@ export default function ChroniclesPage({
         transformOrigin: "50% 50% -50px",
       });
 
+      lenisRef.current?.stop();
+
       const introTl = gsap.timeline({ delay: 0.5 });
 
       introTl.to(firstWords, {
@@ -282,11 +307,13 @@ export default function ChroniclesPage({
 
       introTl.add(() => {
         chroniclesRevertActiveFlicker();
+        lenisRef.current?.start();
       });
 
       function chroniclesNavigate(direction) {
         if (chroniclesAnimatingRef.current) return;
         chroniclesAnimatingRef.current = true;
+        lenisRef.current?.stop();
 
         if (chroniclesTimelineRef.current) {
           chroniclesTimelineRef.current.kill();
@@ -331,6 +358,7 @@ export default function ChroniclesPage({
             chroniclesResetAllSlides();
             chroniclesTimelineRef.current = null;
             chroniclesAnimatingRef.current = false;
+            lenisRef.current?.start();
           },
         });
 
@@ -427,6 +455,9 @@ export default function ChroniclesPage({
         slideSplits.forEach((split) => split.revert()),
       );
       chroniclesRevertActiveFlicker();
+      // Safety net: leaving the page mid-transition (killed above) would
+      // otherwise leave Lenis stopped for the rest of the site.
+      lenisRef.current?.start();
     };
   }, [items]);
 
@@ -447,6 +478,26 @@ export default function ChroniclesPage({
                 <h1 className="subheader">{item.subtitle}</h1>
                 <ChroniclesTitleLink href={titleHref} title={item.title} />
               </div>
+              {(item.descriptionKey || item.description || item.images?.length > 0) && (
+                <div className="chronicles-slide-extra">
+                  {(item.descriptionKey || item.description) && (
+                    <p className="md chronicles-slide-description">
+                      {item.descriptionKey ? t(item.descriptionKey) : item.description}
+                    </p>
+                  )}
+                  {item.images?.length > 0 && (
+                    <div className="chronicles-slide-thumbs">
+                      {item.images.map((src) => (
+                        <div
+                          className="chronicles-slide-thumb"
+                          key={src}
+                          style={{ backgroundImage: `url(${src})` }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="chronicles-slide-footer">
                 <p className="mono sm">{item.locationKey ? t(item.locationKey) : item.location}</p>
                 <div className="chronicles-slide-tags">

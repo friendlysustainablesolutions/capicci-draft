@@ -4,3 +4,8 @@ node_modules
 build
 dist
 .env
+
+# Raw source photos/logos dropped in the project root for picking through --
+# not site assets themselves (those get copied into public/ deliberately).
+# ~100MB as of this writing and growing each time more get added.
+/SITE - FSS/

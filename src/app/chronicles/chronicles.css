@@ -134,6 +134,38 @@
   height: max-content;
 }
 
+/* Sits between the title and the footer -- .chronicles-slide-content's own
+   space-between shares the middle space evenly between this and the title
+   block once it's in the flow, so no extra vertical margin is needed here. */
+.chronicles-slide-extra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+  color: var(--base-300);
+}
+
+.chronicles-slide-description {
+  line-height: 1.6;
+}
+
+.chronicles-slide-thumbs {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.chronicles-slide-thumb {
+  width: 5rem;
+  aspect-ratio: 4 / 5;
+  background-size: cover;
+  background-position: 50% 50%;
+  border: 1px solid var(--base-300);
+  border-radius: 0.3rem;
+}
+
 .chronicles-slide-counter {
   margin-left: auto;
 }
@@ -183,6 +215,26 @@
     justify-content: flex-end;
     gap: 9rem;
     padding: 1.5rem 1.5rem 4.5rem 1.5rem;
+  }
+
+  /* The fixed 9rem gap above is deliberate empty space for a 3-item slide
+     (year, title, footer). A slide with the extra block is a 4-item flex
+     column, and 9rem between every pair of them doesn't fit a phone
+     viewport -- only shrink it on the slides that actually have one. */
+  .chronicles-slide-content:has(.chronicles-slide-extra) {
+    gap: 1.5rem;
+  }
+
+  .chronicles-slide-description {
+    font-size: 1.2rem;
+  }
+
+  .chronicles-slide-thumbs {
+    gap: 0.4rem;
+  }
+
+  .chronicles-slide-thumb {
+    width: 3.5rem;
   }
 
   .chronicles-slide-content .subheader {

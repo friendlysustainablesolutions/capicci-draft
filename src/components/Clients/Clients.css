@@ -20,23 +20,44 @@
   opacity: 0.6;
 }
 
-.clients-grid {
-  display: grid;
-  /* auto-fit collapses the spare track, so the five logos settle into a single
-     even row on desktop and reflow to two columns on narrow screens. */
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 1rem;
+/* Full-width viewport that clips the track; the fade at each edge signals
+   there's more running past it, same idea as the Showreel's text marquee. */
+.clients-carousel {
+  overflow: hidden;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0;
-  list-style: none;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 4rem,
+    #000 calc(100% - 4rem),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 4rem,
+    #000 calc(100% - 4rem),
+    transparent 100%
+  );
+}
+
+.clients-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  will-change: transform;
 }
 
 /* The logos arrive with clashing lock-ups -- transparent, white-boxed, and one
    on a solid red block, in ratios from 0.8 to 4.8. A white tile plus contain
-   normalises the frame; the greyscale settles the colour clash until hover. */
+   normalises the frame; the greyscale settles the colour clash until hover.
+   A fixed width (the grid's minmax(190px, 1fr) doesn't apply to a flex track
+   that scrolls) keeps every tile identical regardless of logo count. */
 .clients-item {
   position: relative;
+  flex-shrink: 0;
+  width: 220px;
   aspect-ratio: 3 / 2;
   border: 1px solid var(--base-200);
   border-radius: 0.5rem;
@@ -74,9 +95,29 @@
     margin-bottom: 3rem;
   }
 
-  .clients-grid {
-    grid-template-columns: 1fr 1fr;
+  .clients-carousel {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 2rem,
+      #000 calc(100% - 2rem),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 2rem,
+      #000 calc(100% - 2rem),
+      transparent 100%
+    );
+  }
+
+  .clients-track {
     gap: 0.75rem;
+  }
+
+  .clients-item {
+    width: 160px;
   }
 
   .clients-item img {

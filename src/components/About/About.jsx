@@ -9,11 +9,11 @@ import "./About.css";
 
 const serviceImages = [
   {
-    src: "/images/catering-full/jamon-carving.jpg",
+    src: "/images/catering-full/buffet-service.jpg",
     compassRotation: 0,
   },
   {
-    src: "/images/quinta-do-campo/table-poolhouse.jpg",
+    src: "/images/quinta-do-campo/lemon-centerpiece.jpg",
     compassRotation: 180,
   },
 ];
