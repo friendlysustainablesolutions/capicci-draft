@@ -158,7 +158,13 @@ export default function Preloader() {
       function primeSnake(pieces) {
         pieces.forEach((el, i) => {
           const dir = i % 2 === 0 ? -1 : 1;
-          gsap.set(el, { x: dir * GRID, y: OFFSCREEN_Y, opacity: 1 });
+          // opacity 0, not 1: overflow:visible on the SVG (needed so the
+          // "rise from off-canvas" effect isn't clipped by the viewBox) means
+          // this off-screen priming position can still land inside the
+          // visible viewport on some screen sizes -- with opacity 1 that
+          // showed as static, un-animated letters sitting behind the icon
+          // for the ~2.2s before the wordmark's own phase even starts.
+          gsap.set(el, { x: dir * GRID, y: OFFSCREEN_Y, opacity: 0 });
         });
       }
 
@@ -175,7 +181,9 @@ export default function Preloader() {
       function snakeIn(tl, pieces, startTime, stagger, riseDur, turnDur) {
         pieces.forEach((el, i) => {
           const t0 = startTime + i * stagger;
-          tl.to(el, { y: 0, duration: riseDur, ease: "none" }, t0).to(
+          // opacity fades in over the same span as the rise, so each piece
+          // only becomes visible as it actually starts moving into place.
+          tl.to(el, { y: 0, opacity: 1, duration: riseDur, ease: "none" }, t0).to(
             el,
             { x: 0, duration: turnDur, ease: "none" },
             t0 + riseDur,

@@ -56,7 +56,6 @@ export default function DecorationPage() {
         <div className="container">
           <div className="page-header-content">
             <Copy animateOnScroll={false} delay={0.3}>
-              <h1 className="subheader">CAPICCI</h1>
               <h1>{t("decorationTitle")}</h1>
             </Copy>
           </div>

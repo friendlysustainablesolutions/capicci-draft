@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
+import { FaInstagram, FaLinkedin } from "react-icons/fa";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 import "./Menu.css";
@@ -24,8 +25,8 @@ const MENU_PRIMARY_LINKS = [
 ];
 
 const MENU_SOCIAL_ICONS = [
-  { href: "#", label: "Instagram", icon: "/images/icons/instagram.png" },
-  { href: "#", label: "Facebook", icon: "/images/icons/facebook.png" },
+  { href: "#", label: "Instagram", Icon: FaInstagram },
+  { href: "#", label: "LinkedIn", Icon: FaLinkedin },
 ];
 
 function MenuLineLink({ href, label, className = "", onClick }) {
@@ -205,7 +206,7 @@ export default function Menu() {
                       the existing staggered reveal. */}
                   <span className="menu-line-mask">
                     <span className="menu-line">
-                      <img src={social.icon} alt="" />
+                      <social.Icon aria-hidden="true" />
                     </span>
                   </span>
                 </Link>

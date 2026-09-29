@@ -41,7 +41,7 @@ const weddingServiceCards = [
     labelKey: "decoration",
     valueKey: "uniqueAestheticCopy",
     label2Key: "sustainability",
-    value2Key: "uniqueAestheticCopy",
+    value2Key: "sustainabilityCopy",
   },
   {
     id: "transmit-card-3",

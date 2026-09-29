@@ -155,6 +155,18 @@
 
 .chronicles-slide-description {
   line-height: 1.6;
+  /* font-weight alone doesn't help here -- Bellefair only ships a single 400
+     weight, so the browser can't actually render it bolder. This paragraph
+     also sits in the content gradient's lightest band (the darkening runs
+     heavier at the very top and bottom, lighter through the middle where
+     this text falls), so contrast has to come entirely from the shadow.
+     Same heavy multi-layer glow already proven for photo-overlay text on
+     the gallery's own quote (see .catalog-quote). */
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 12px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(0, 0, 0, 0.6);
 }
 
 .chronicles-slide-thumbs {
