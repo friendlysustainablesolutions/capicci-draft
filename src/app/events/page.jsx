@@ -17,6 +17,7 @@ const eventImages = [
   { src: "/images/events/events_7.jpg", alt: "Montagem de evento CAPICCI" },
   { src: "/images/events/events_8.jpg", alt: "Evento corporativo CAPICCI" },
   { src: "/images/events/events_9.jpg", alt: "Evento particular CAPICCI" },
+  { src: "/images/events/events_betclic_2.jpg", alt: "Evento Betclic Jinglebet CAPICCI" },
 ];
 
 export default function EventsPage() {

@@ -20,6 +20,7 @@ const CLIENT_LOGOS = [
   { src: "/clients/exklusive.jpeg", name: "Exklusive Special and Visual Effects" },
   { src: "/clients/mossa.png", name: "Mossa" },
   { src: "/clients/nova-sbe.png", name: "Nova SBE Executive Education" },
+  { src: "/clients/clube-naval-cascais.jpg", name: "Clube Naval de Cascais" },
 ];
 
 // Constant scroll speed regardless of how many logos there are or how wide
